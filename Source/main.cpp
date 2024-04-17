@@ -1,10 +1,8 @@
-#include <iostream>
-
-// TODO:
-// Extract some of the Nova files, find out what I need to get a window running
+#include "Flux.h"
 
 int main()
 {
-	printf("Hello World\n");
+	Flux app;
+	app.Run();
 	return 0;
 }
