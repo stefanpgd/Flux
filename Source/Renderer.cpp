@@ -67,16 +67,21 @@ void Renderer::Render()
 	ComPtr<ID3D12GraphicsCommandList2> commandList = directCommands->GetGraphicsCommandList();
 	ID3D12DescriptorHeap* heaps[] = { CBVHeap->GetAddress() };
 
+	CD3DX12_CPU_DESCRIPTOR_HANDLE backBufferRTV = window->GetCurrentScreenRTV();
+
 	// 1. Reset & prepare command allocator //
 	directCommands->ResetCommandList(backBufferIndex);
+
+	// 2. Handle resource states for render target and Clear buffer
+	TransitionResource(window->GetCurrentScreenBuffer().Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	BindAndClearRenderTarget(window, &backBufferRTV);
+	TransitionResource(window->GetCurrentScreenBuffer().Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 
 	// 2. Bind general resources & Set pipeline parameters //
 	commandList->SetDescriptorHeaps(1, heaps);
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	// 3. Record Render Stages //
-
-	// 4. Execute List, Present and wait for the next frame to be ready //
+	// 3. Execute List, Present and wait for the next frame to be ready //
 	directCommands->ExecuteCommandList(backBufferIndex);
 	window->Present();
 	directCommands->WaitForFenceValue(window->GetCurrentBackBufferIndex());

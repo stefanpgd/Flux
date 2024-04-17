@@ -45,7 +45,7 @@ void Flux::Update()
 
 void Flux::Render()
 {
-
+	renderer->Render();
 }
 
 void Flux::RegisterWindowClass()
