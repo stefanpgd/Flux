@@ -7,7 +7,7 @@
 #include <wrl.h>
 using namespace Microsoft::WRL;
 
-#include "Mathematics.h"
+#include "Framework/Mathematics.h"
 
 struct Vertex
 {

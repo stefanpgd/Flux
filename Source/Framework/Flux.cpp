@@ -1,5 +1,5 @@
-#include "Flux.h"
-#include "Renderer.h"
+#include "Framework/Flux.h"
+#include "Framework/Renderer.h"
 
 #define WIN32_LEAN_AND_MEAN 
 #include <Windows.h>

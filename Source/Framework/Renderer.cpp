@@ -1,4 +1,4 @@
-#include "Renderer.h"
+#include "Framework/Renderer.h"
 
 // DirectX Components //
 #include "Graphics/DXAccess.h"
@@ -19,6 +19,11 @@
 #include <imgui.h>
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx12.h>
+
+// TEMP //
+Mesh* screenMesh;
+DXRootSignature* screenRoot;
+DXPipeline* screenPipeline;
 
 namespace RendererInternal
 {
@@ -53,6 +58,42 @@ Renderer::Renderer(const std::wstring& applicationName, unsigned int windowWidth
 	window = new Window(applicationName, windowWidth, windowHeight);
 
 	InitializeImGui();
+
+	// Placeholder / Temp //
+	Vertex* screenVertices = new Vertex[4];
+	screenVertices[0].Position = glm::vec3(-1.0f, -1.0f, 0.0f);
+	screenVertices[1].Position = glm::vec3(-1.0f, 1.0f, 0.0f);
+	screenVertices[2].Position = glm::vec3(1.0f, 1.0f, 0.0f);
+	screenVertices[3].Position = glm::vec3(1.0f, -1.0f, 0.0f);
+
+	screenVertices[0].TexCoord = glm::vec2(0.0f, 1.0f);
+	screenVertices[1].TexCoord = glm::vec2(0.0f, 0.0f);
+	screenVertices[2].TexCoord = glm::vec2(1.0f, 0.0f);
+	screenVertices[3].TexCoord = glm::vec2(1.0f, 1.0f);
+
+	unsigned int* screenIndices = new unsigned int[6]
+		{	2, 1, 0, 3, 2, 0 };
+
+	screenMesh = new Mesh(screenVertices, 4, screenIndices, 6);
+
+	delete[] screenVertices;
+	delete[] screenIndices;
+
+	CD3DX12_DESCRIPTOR_RANGE1 screenRange[1];
+	screenRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // Render Target as Texture
+
+	CD3DX12_ROOT_PARAMETER1 screenRootParameters[1];
+	screenRootParameters[0].InitAsDescriptorTable(1, &screenRange[0], D3D12_SHADER_VISIBILITY_PIXEL);
+
+	screenRoot = new DXRootSignature(screenRootParameters, _countof(screenRootParameters),
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+	DXPipelineDescription description;
+	description.VertexPath = "Source/Shaders/screen.vertex.hlsl";
+	description.PixelPath = "Source/Shaders/screen.pixel.hlsl";
+	description.RootSignature = screenRoot;
+
+	screenPipeline = new DXPipeline(description);
 }
 
 void Renderer::Update(float deltaTime)
@@ -68,20 +109,31 @@ void Renderer::Render()
 	ID3D12DescriptorHeap* heaps[] = { CBVHeap->GetAddress() };
 
 	CD3DX12_CPU_DESCRIPTOR_HANDLE backBufferRTV = window->GetCurrentScreenRTV();
+	CD3DX12_CPU_DESCRIPTOR_HANDLE depthView = window->GetDepthDSV();
 
 	// 1. Reset & prepare command allocator //
 	directCommands->ResetCommandList(backBufferIndex);
 
-	// 2. Handle resource states for render target and Clear buffer
+	// 2. Prepare back buffer to be used as Render Target
 	TransitionResource(window->GetCurrentScreenBuffer().Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-	BindAndClearRenderTarget(window, &backBufferRTV);
-	TransitionResource(window->GetCurrentScreenBuffer().Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+	BindAndClearRenderTarget(window, &backBufferRTV, &depthView);
 
-	// 2. Bind general resources & Set pipeline parameters //
-	commandList->SetDescriptorHeaps(1, heaps);
+	// 3. Setup pipeline, and prepare settings for it //
+	commandList->SetGraphicsRootSignature(screenRoot->GetAddress());
+	commandList->SetPipelineState(screenPipeline->GetAddress());
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	// 3. Execute List, Present and wait for the next frame to be ready //
+	commandList->SetDescriptorHeaps(1, heaps);
+
+	// 4. Draw the screen quad //
+	commandList->IASetVertexBuffers(0, 1, &screenMesh->GetVertexBufferView());
+	commandList->IASetIndexBuffer(&screenMesh->GetIndexBufferView());
+	commandList->DrawIndexedInstanced(screenMesh->GetIndicesCount(), 1, 0, 0, 0);
+
+	// 5. Transition back the backbuffer to be used as display //
+	TransitionResource(window->GetCurrentScreenBuffer().Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+
+	// 6. Execute List, Present and wait for the next frame to be ready //
 	directCommands->ExecuteCommandList(backBufferIndex);
 	window->Present();
 	directCommands->WaitForFenceValue(window->GetCurrentBackBufferIndex());
