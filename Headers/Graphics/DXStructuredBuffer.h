@@ -5,10 +5,10 @@
 #include <wrl.h>
 using namespace Microsoft::WRL;
 
-class DXStructedBuffer
+class DXStructuredBuffer
 {
 public:
-	DXStructedBuffer(const void* data, unsigned int numberOfElements, unsigned int elementSize);
+	DXStructuredBuffer(const void* data, unsigned int numberOfElements, unsigned int elementSize);
 
 	void UpdateData(const void* data);
 
@@ -21,7 +21,7 @@ private:
 	unsigned int elementSize;
 	unsigned int bufferSize;
 
-	ComPtr<ID3D12Resource> structedBuffer;
+	ComPtr<ID3D12Resource> structuredBuffer;
 
 	int srvIndex = -1;
 	int uavIndex = -1;

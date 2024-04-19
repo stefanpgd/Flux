@@ -15,12 +15,14 @@
 #include "Graphics/Mesh.h"
 #include "Graphics/Texture.h"
 #include "Graphics/DepthBuffer.h"
-#include "Graphics/DXStructedBuffer.h"
+#include "Graphics/DXStructuredBuffer.h"
 
 #include <cassert>
 #include <imgui.h>
+#include <array>
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx12.h>
+#include <random>
 
 // TEMP //
 Mesh* screenMesh;
@@ -30,11 +32,11 @@ DXPipeline* screenPipeline;
 Texture* computeTest;
 DXRootSignature* computeRoot;
 DXComputePipeline* computePipeline;
-DXStructedBuffer* bufferTest;
+DXStructuredBuffer* particleBuffer;
 
-struct TestData
+struct Particle
 {
-	float R = 0.5f;
+	float position[2];
 };
 
 namespace RendererInternal
@@ -131,14 +133,16 @@ Renderer::Renderer(const std::wstring& applicationName, unsigned int windowWidth
 	computeRoot = new DXRootSignature(computeParameters, _countof(computeParameters), D3D12_ROOT_SIGNATURE_FLAG_NONE);
 	computePipeline = new DXComputePipeline(computeRoot, "Source/Shaders/hello.compute.hlsl");
 
-	TestData* test = new TestData[1024];
+	srand(time(nullptr));
 
+	Particle* particles = new Particle[1024];
 	for(int i = 0; i < 1024; i++)
 	{
-		test[i].R = (float)i / 1024.0f;
+		particles[i].position[0] = rand() % 1024;
+		particles[i].position[1] = rand() % 1024;
 	}
 
-	bufferTest = new DXStructedBuffer(test, 1024, sizeof(TestData));
+	particleBuffer = new DXStructuredBuffer(particles, 1024, sizeof(Particle));
 }
 
 void Renderer::Update(float deltaTime)
@@ -170,9 +174,9 @@ void Renderer::Render()
 
 	CD3DX12_GPU_DESCRIPTOR_HANDLE uavHandle = computeTest->GetUAV();
 	commandList->SetComputeRootDescriptorTable(0, uavHandle);
-	commandList->SetComputeRootDescriptorTable(1, bufferTest->GetUAV());
+	commandList->SetComputeRootDescriptorTable(1, particleBuffer->GetUAV());
 
-	commandList->Dispatch(1024, 1024, 1);
+	commandList->Dispatch(64, 1, 1);
 	//TransitionResource(computeTest->GetResource().Get(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
 	// 3. Setup pipeline, and prepare settings for it //

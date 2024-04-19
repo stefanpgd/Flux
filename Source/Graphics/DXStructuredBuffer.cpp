@@ -1,7 +1,7 @@
-#include "Graphics/DXStructedBuffer.h"
+#include "Graphics/DXStructuredBuffer.h"
 #include "Graphics/DXUtilities.h"
 
-DXStructedBuffer::DXStructedBuffer(const void* data, unsigned int numberOfElements, unsigned int elementSize)
+DXStructuredBuffer::DXStructuredBuffer(const void* data, unsigned int numberOfElements, unsigned int elementSize)
 	: numberOfElements(numberOfElements), elementSize(elementSize)
 {
 	DXDescriptorHeap* CBVHeap = DXAccess::GetDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
@@ -13,19 +13,18 @@ DXStructedBuffer::DXStructedBuffer(const void* data, unsigned int numberOfElemen
 	UpdateData(data);
 }
 
-void DXStructedBuffer::UpdateData(const void* data)
+void DXStructuredBuffer::UpdateData(const void* data)
 {
 	DXDescriptorHeap* heap = DXAccess::GetDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
-	D3D12_RESOURCE_DESC description = CD3DX12_RESOURCE_DESC::Buffer(
-		(UINT64)bufferSize, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS, 0);
+	D3D12_RESOURCE_DESC description = CD3DX12_RESOURCE_DESC::Buffer(bufferSize, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS, 0);
 	
 	D3D12_SUBRESOURCE_DATA subresource;
 	subresource.pData = data;
 	subresource.RowPitch = bufferSize;
 
 	ComPtr<ID3D12Resource> intermediate;
-	UploadPixelShaderResource(structedBuffer, intermediate, description, subresource);
+	UploadPixelShaderResource(structuredBuffer, intermediate, description, subresource);
 
 	// Create SRV //
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
@@ -36,7 +35,7 @@ void DXStructedBuffer::UpdateData(const void* data)
 	srvDesc.Buffer.StructureByteStride = elementSize;
 	srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 
-	DXAccess::GetDevice()->CreateShaderResourceView(structedBuffer.Get(), &srvDesc, heap->GetCPUHandleAt(srvIndex));
+	DXAccess::GetDevice()->CreateShaderResourceView(structuredBuffer.Get(), &srvDesc, heap->GetCPUHandleAt(srvIndex));
 
 	// Create UAV //
 	D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
@@ -47,21 +46,21 @@ void DXStructedBuffer::UpdateData(const void* data)
 	uavDesc.Buffer.StructureByteStride = elementSize;
 	uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 
-	DXAccess::GetDevice()->CreateUnorderedAccessView(structedBuffer.Get(), nullptr, &uavDesc, heap->GetCPUHandleAt(uavIndex));
+	DXAccess::GetDevice()->CreateUnorderedAccessView(structuredBuffer.Get(), nullptr, &uavDesc, heap->GetCPUHandleAt(uavIndex));
 }
 
-ComPtr<ID3D12Resource> DXStructedBuffer::GetResource()
+ComPtr<ID3D12Resource> DXStructuredBuffer::GetResource()
 {
-	return structedBuffer;
+	return structuredBuffer;
 }
 
-CD3DX12_GPU_DESCRIPTOR_HANDLE DXStructedBuffer::GetSRV()
+CD3DX12_GPU_DESCRIPTOR_HANDLE DXStructuredBuffer::GetSRV()
 {
 	DXDescriptorHeap* SRVHeap = DXAccess::GetDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	return SRVHeap->GetGPUHandleAt(srvIndex);
 }
 
-CD3DX12_GPU_DESCRIPTOR_HANDLE DXStructedBuffer::GetUAV()
+CD3DX12_GPU_DESCRIPTOR_HANDLE DXStructuredBuffer::GetUAV()
 {
 	DXDescriptorHeap* UAVHeap = DXAccess::GetDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	return UAVHeap->GetGPUHandleAt(uavIndex);
