@@ -85,7 +85,7 @@ Renderer::Renderer(const std::wstring& applicationName, unsigned int windowWidth
 	delete[] screenIndices;
 
 	CD3DX12_DESCRIPTOR_RANGE1 screenRange[1];
-	screenRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0); // Render Target as Texture
+	screenRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // Render Target as Texture
 
 	CD3DX12_ROOT_PARAMETER1 screenRootParameters[1];
 	screenRootParameters[0].InitAsDescriptorTable(1, &screenRange[0], D3D12_SHADER_VISIBILITY_PIXEL);
@@ -102,13 +102,13 @@ Renderer::Renderer(const std::wstring& applicationName, unsigned int windowWidth
 
 	int width = 1024;
 	int height = 1024;
-	float* textureBuffer = new float[2 * width * height];
-	for(int i = 0; i < width * height * 2; i++)
+	unsigned int* textureBuffer = new unsigned int[width * height];
+	for(int i = 0; i < width * height; i++)
 	{
-		textureBuffer[i] = 0.5f;
+		textureBuffer[i] = 0;
 	}
 
-	computeTest = new Texture(textureBuffer, width, height, DXGI_FORMAT_R32G32_FLOAT, sizeof(float) * 2);
+	computeTest = new Texture(textureBuffer, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, sizeof(unsigned int));
 
 	CD3DX12_DESCRIPTOR_RANGE1 computeRange[1];
 	computeRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);
@@ -151,6 +151,7 @@ void Renderer::Render()
 	commandList->SetComputeRootDescriptorTable(0, uavHandle);
 
 	commandList->Dispatch(1024, 1024, 1);
+	//TransitionResource(computeTest->GetResource().Get(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
 	// 3. Setup pipeline, and prepare settings for it //
 	commandList->SetGraphicsRootSignature(screenRoot->GetAddress());
@@ -160,9 +161,12 @@ void Renderer::Render()
 	// 4. Draw the screen quad //
 	commandList->IASetVertexBuffers(0, 1, &screenMesh->GetVertexBufferView());
 	commandList->IASetIndexBuffer(&screenMesh->GetIndexBufferView());
+
+	commandList->SetGraphicsRootDescriptorTable(0, computeTest->GetSRV());
 	commandList->DrawIndexedInstanced(screenMesh->GetIndicesCount(), 1, 0, 0, 0);
 
 	// 5. Transition back the backbuffer to be used as display //
+	//TransitionResource(computeTest->GetResource().Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 	TransitionResource(window->GetCurrentScreenBuffer().Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 
 	// 6. Execute List, Present and wait for the next frame to be ready //
