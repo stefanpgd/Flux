@@ -8,6 +8,7 @@
 #include "Graphics/DXDescriptorHeap.h"
 #include "Graphics/DXRootSignature.h"
 #include "Graphics/DXPipeline.h"
+#include "Graphics/DXComputePipeline.h"
 
 // Renderer Components //
 #include "Graphics/Window.h"
@@ -24,6 +25,10 @@
 Mesh* screenMesh;
 DXRootSignature* screenRoot;
 DXPipeline* screenPipeline;
+
+Texture* computeTest;
+DXRootSignature* computeRoot;
+DXComputePipeline* computePipeline;
 
 namespace RendererInternal
 {
@@ -80,7 +85,7 @@ Renderer::Renderer(const std::wstring& applicationName, unsigned int windowWidth
 	delete[] screenIndices;
 
 	CD3DX12_DESCRIPTOR_RANGE1 screenRange[1];
-	screenRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // Render Target as Texture
+	screenRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0); // Render Target as Texture
 
 	CD3DX12_ROOT_PARAMETER1 screenRootParameters[1];
 	screenRootParameters[0].InitAsDescriptorTable(1, &screenRange[0], D3D12_SHADER_VISIBILITY_PIXEL);
@@ -94,6 +99,25 @@ Renderer::Renderer(const std::wstring& applicationName, unsigned int windowWidth
 	description.RootSignature = screenRoot;
 
 	screenPipeline = new DXPipeline(description);
+
+	int width = 1024;
+	int height = 1024;
+	float* textureBuffer = new float[2 * width * height];
+	for(int i = 0; i < width * height * 2; i++)
+	{
+		textureBuffer[i] = 0.5f;
+	}
+
+	computeTest = new Texture(textureBuffer, width, height, DXGI_FORMAT_R32G32_FLOAT, sizeof(float) * 2);
+
+	CD3DX12_DESCRIPTOR_RANGE1 computeRange[1];
+	computeRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);
+
+	CD3DX12_ROOT_PARAMETER1 computeParameters[1];
+	computeParameters[0].InitAsDescriptorTable(1, &computeRange[0]);
+
+	computeRoot = new DXRootSignature(computeParameters, _countof(computeParameters), D3D12_ROOT_SIGNATURE_FLAG_NONE);
+	computePipeline = new DXComputePipeline(computeRoot, "Source/Shaders/hello.compute.hlsl");
 }
 
 void Renderer::Update(float deltaTime)
@@ -118,12 +142,20 @@ void Renderer::Render()
 	TransitionResource(window->GetCurrentScreenBuffer().Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 	BindAndClearRenderTarget(window, &backBufferRTV, &depthView);
 
+	// TEMP //
+	commandList->SetDescriptorHeaps(1, heaps);
+	commandList->SetComputeRootSignature(computeRoot->GetAddress());
+	commandList->SetPipelineState(computePipeline->GetAddress());
+
+	CD3DX12_GPU_DESCRIPTOR_HANDLE uavHandle = computeTest->GetUAV();
+	commandList->SetComputeRootDescriptorTable(0, uavHandle);
+
+	commandList->Dispatch(1024, 1024, 1);
+
 	// 3. Setup pipeline, and prepare settings for it //
 	commandList->SetGraphicsRootSignature(screenRoot->GetAddress());
 	commandList->SetPipelineState(screenPipeline->GetAddress());
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	commandList->SetDescriptorHeaps(1, heaps);
 
 	// 4. Draw the screen quad //
 	commandList->IASetVertexBuffers(0, 1, &screenMesh->GetVertexBufferView());
