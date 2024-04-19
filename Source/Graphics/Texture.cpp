@@ -78,8 +78,4 @@ void Texture::UploadData(void* data, int width, int height)
 
 	uavIndex = heap->GetNextAvailableIndex();
 	DXAccess::GetDevice()->CreateUnorderedAccessView(textureResource.Get(), nullptr, &uavDesc, heap->GetCPUHandleAt(uavIndex));
-
-
-
-
 }

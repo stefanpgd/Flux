@@ -15,6 +15,7 @@
 #include "Graphics/Mesh.h"
 #include "Graphics/Texture.h"
 #include "Graphics/DepthBuffer.h"
+#include "Graphics/DXStructedBuffer.h"
 
 #include <cassert>
 #include <imgui.h>
@@ -29,6 +30,12 @@ DXPipeline* screenPipeline;
 Texture* computeTest;
 DXRootSignature* computeRoot;
 DXComputePipeline* computePipeline;
+DXStructedBuffer* bufferTest;
+
+struct TestData
+{
+	float R = 0.5f;
+};
 
 namespace RendererInternal
 {
@@ -45,6 +52,7 @@ namespace RendererInternal
 	Texture* defaultTexture = nullptr;
 }
 using namespace RendererInternal;
+
 
 Renderer::Renderer(const std::wstring& applicationName, unsigned int windowWidth,
 	unsigned int windowHeight)
@@ -113,11 +121,24 @@ Renderer::Renderer(const std::wstring& applicationName, unsigned int windowWidth
 	CD3DX12_DESCRIPTOR_RANGE1 computeRange[1];
 	computeRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);
 
-	CD3DX12_ROOT_PARAMETER1 computeParameters[1];
+	CD3DX12_DESCRIPTOR_RANGE1 dataRange[1];
+	dataRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 1, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);
+
+	CD3DX12_ROOT_PARAMETER1 computeParameters[2];
 	computeParameters[0].InitAsDescriptorTable(1, &computeRange[0]);
+	computeParameters[1].InitAsDescriptorTable(1, &dataRange[0]);
 
 	computeRoot = new DXRootSignature(computeParameters, _countof(computeParameters), D3D12_ROOT_SIGNATURE_FLAG_NONE);
 	computePipeline = new DXComputePipeline(computeRoot, "Source/Shaders/hello.compute.hlsl");
+
+	TestData* test = new TestData[1024];
+
+	for(int i = 0; i < 1024; i++)
+	{
+		test[i].R = (float)i / 1024.0f;
+	}
+
+	bufferTest = new DXStructedBuffer(test, 1024, sizeof(TestData));
 }
 
 void Renderer::Update(float deltaTime)
@@ -149,6 +170,7 @@ void Renderer::Render()
 
 	CD3DX12_GPU_DESCRIPTOR_HANDLE uavHandle = computeTest->GetUAV();
 	commandList->SetComputeRootDescriptorTable(0, uavHandle);
+	commandList->SetComputeRootDescriptorTable(1, bufferTest->GetUAV());
 
 	commandList->Dispatch(1024, 1024, 1);
 	//TransitionResource(computeTest->GetResource().Get(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);

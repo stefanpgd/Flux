@@ -8,15 +8,18 @@ struct ComputeShaderInput
     uint GroupIndex : SV_GroupIndex;                // Flattened local index of the thread within a thread group.
 };
 
+struct TestData
+{
+    float R;
+};
+
 RWTexture2D<float4> testTexture : register(u0);
+RWStructuredBuffer<TestData> test : register(u1);
 
 [numthreads(1, 1, 1)]
 void main(ComputeShaderInput IN)
 {
-    float strengthX = IN.DispatchThreadID.x / 1024.0f;
-    float strengthY = IN.DispatchThreadID.y / 1024.0f;
+    float strength = test[IN.DispatchThreadID.x].R;
     
-    strengthY = 0.0f;
-    
-    testTexture[IN.DispatchThreadID.xy] = float4(strengthX, strengthY, 0.0f, 1.0f);
+    testTexture[IN.DispatchThreadID.xy] = float4(strength, 0.0f, 0.0f, 1.0f);
 }

@@ -99,7 +99,7 @@ inline void UploadPixelShaderResource(ComPtr<ID3D12Resource>& destinationResourc
 	// 2. Prepare barriers & record commands //
 	CD3DX12_RESOURCE_BARRIER copyBarrier = CD3DX12_RESOURCE_BARRIER::Transition(destinationResource.Get(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST);
 	CD3DX12_RESOURCE_BARRIER pixelBarrier = CD3DX12_RESOURCE_BARRIER::Transition(destinationResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-	
+
 	copyCommands->Flush();
 	copyCommands->ResetCommandList();
 
