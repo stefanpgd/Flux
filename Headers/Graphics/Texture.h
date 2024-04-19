@@ -8,18 +8,28 @@ using namespace Microsoft::WRL;
 class Texture
 {
 public:
-	Texture(unsigned char* data, int width, int height);
+	Texture(void* data, int width, int height, 
+		DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM, unsigned int formatSizeInBytes = 4);
 	~Texture();
 
 	int GetSRVIndex();
+	
 	CD3DX12_GPU_DESCRIPTOR_HANDLE GetSRV();
-	D3D12_GPU_VIRTUAL_ADDRESS GetGPULocation();
+	CD3DX12_GPU_DESCRIPTOR_HANDLE GetUAV();
+
+	DXGI_FORMAT GetFormat();
 	ComPtr<ID3D12Resource> GetResource();
+	D3D12_GPU_VIRTUAL_ADDRESS GetGPULocation();
 
 private:
-	void UploadData(unsigned char* data, int width, int height);
+	void UploadData(void* data, int width, int height);
 
 private:
 	ComPtr<ID3D12Resource> textureResource;
+
+	DXGI_FORMAT format;
+	unsigned int formatSizeInBytes;
+
 	int srvIndex = 0;
+	int uavIndex = 0;
 };

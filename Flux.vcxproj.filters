@@ -156,5 +156,6 @@
   <ItemGroup>
     <FxCompile Include="Source\Shaders\screen.vertex.hlsl" />
     <FxCompile Include="Source\Shaders\screen.pixel.hlsl" />
+    <FxCompile Include="Source\Shaders\hello.compute.hlsl" />
   </ItemGroup>
 </Project>
