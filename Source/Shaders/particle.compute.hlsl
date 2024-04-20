@@ -13,6 +13,17 @@ struct Particle
     float mass;
 };
 
+struct SimulationSettings
+{
+    float deltaTime;
+    float G;
+    float maxVelocity;
+    float mouseMass;
+    float positionX;
+    float positionY;
+};
+ConstantBuffer<SimulationSettings> settings : register(b0);
+
 RWTexture2D<float4> testTexture : register(u0);
 RWStructuredBuffer<Particle> particles : register(u1);
 
@@ -50,12 +61,12 @@ void main(ComputeShaderInput IN)
 {
     Particle p = particles[IN.DispatchThreadID.x];
     
-    const float G = 1.0f;
-    const float maxVelocity = 20.0f;
+    const float G = settings.G;
+    const float maxVelocity = settings.maxVelocity;
     
     float2 acceleration = float2(0.0, 0.0);
     
-    float2 center = float2(512, 512);
+    float2 center = float2(settings.positionX, settings.positionY);
     
     float2 dir = center - p.position;
     float distance = length(dir);
@@ -77,7 +88,7 @@ void main(ComputeShaderInput IN)
     particles[IN.DispatchThreadID.x] = p;
     
     const float coreStengthColor = 0.175f;
-    const float sideStrengthColor = 0.025;
+    const float sideStrengthColor = 0.015;
     
     float4 coreColor = float4(coreStengthColor, coreStengthColor, coreStengthColor, 1.0);
     float4 sideColor = float4(sideStrengthColor, sideStrengthColor, sideStrengthColor, 1.0);

@@ -4,17 +4,35 @@
 #include "Graphics/DXRootSignature.h"
 #include "Graphics/Texture.h"
 
-#include <glm.hpp>
 #include "Utilities/Random.h"
 #include "Utilities/Logger.h"
+
+#include <glm.hpp>
+#include <imgui.h>
 
 ParticleComputeStage::ParticleComputeStage(Window* window, Texture* backBuffer) 
 	: RenderStage(window), backBuffer(backBuffer)
 {
-	particleCount = 2048 * 2 * 2 * 2 * 2;
+	particleCount = pow(2, 15);
 
+	settingsBuffer = new DXStructuredBuffer(static_cast<void*>(&settings), 1, sizeof(SimulationSettings));
 	InitializeParticles();
+
 	CreatePipeline();
+}
+
+void ParticleComputeStage::Update(float deltaTime)
+{
+	settings.deltaTime = deltaTime;
+	settings.positionX = ImGui::GetIO().MousePos.x;
+	settings.positionY = ImGui::GetIO().MousePos.y;
+
+	ImGui::Begin("Test Hello");
+	ImGui::DragFloat("G", &settings.G, 0.01f, 0.01f, 10.0f);
+	ImGui::DragFloat("Max Velocity", &settings.maxVelocity, 0.1f, 0.01f, 500.0f);
+	ImGui::DragFloat("Mouse Mass", &settings.mouseMass, 10.0f);
+
+	ImGui::End();
 }
 
 void ParticleComputeStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList)
@@ -26,6 +44,7 @@ void ParticleComputeStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> comman
 	// 2. Bind root arguments //
 	commandList->SetComputeRootDescriptorTable(0, backBuffer->GetUAV());
 	commandList->SetComputeRootDescriptorTable(1, particleBuffer->GetUAV());
+	commandList->SetComputeRoot32BitConstants(2, 6, &settings, 0);
 
 	// 3. Execute particle compute //
 	unsigned int dispatchSize = particleCount / 16;
@@ -54,7 +73,7 @@ void ParticleComputeStage::InitializeParticles()
 		particles[i].velocity[0] = velocity.x;
 		particles[i].velocity[1] = velocity.y;
 
-		particles[i].mass = 1.0;
+		particles[i].mass = RandomInRange(1.0, 25.0f);
 	}
 
 	particleBuffer = new DXStructuredBuffer(particles, particleCount, sizeof(Particle));
@@ -65,12 +84,17 @@ void ParticleComputeStage::CreatePipeline()
 	CD3DX12_DESCRIPTOR_RANGE1 computeRange[1];
 	computeRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);
 
-	CD3DX12_DESCRIPTOR_RANGE1 dataRange[1];
-	dataRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 1, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);
+	CD3DX12_DESCRIPTOR_RANGE1 particleRange[1];
+	particleRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 1, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);
 
-	CD3DX12_ROOT_PARAMETER1 computeParameters[2];
+	CD3DX12_DESCRIPTOR_RANGE1 settingsRange[1];
+	settingsRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 2, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);
+
+	CD3DX12_ROOT_PARAMETER1 computeParameters[3];
 	computeParameters[0].InitAsDescriptorTable(1, &computeRange[0]);
-	computeParameters[1].InitAsDescriptorTable(1, &dataRange[0]);
+	computeParameters[1].InitAsDescriptorTable(1, &particleRange[0]);
+	computeParameters[2].InitAsConstants(6, 0, 0);
+
 
 	rootSignature = new DXRootSignature(computeParameters, _countof(computeParameters), D3D12_ROOT_SIGNATURE_FLAG_NONE);
 	computePipeline = new DXComputePipeline(rootSignature, "Source/Shaders/particle.compute.hlsl");

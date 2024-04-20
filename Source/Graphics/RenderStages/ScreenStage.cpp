@@ -5,6 +5,9 @@
 #include "Graphics/Texture.h"
 #include "Graphics/DXUtilities.h"
 
+#include <imgui.h>
+#include <imgui_impl_dx12.h>
+
 ScreenStage::ScreenStage(Window* window, Texture* backBuffer) 
 	: RenderStage(window), backBuffer(backBuffer)
 {
@@ -38,6 +41,8 @@ void ScreenStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList)
 
 	// 5. Draw screen quad //
 	commandList->DrawIndexedInstanced(screenMesh->GetIndicesCount(), 1, 0, 0, 0);
+
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList.Get());
 
 	// 6. Prepare render target for presentation //
 	TransitionResource(window->GetCurrentScreenBuffer().Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);

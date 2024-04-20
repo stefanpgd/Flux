@@ -65,7 +65,7 @@ Renderer::Renderer(const std::wstring& applicationName, unsigned int windowWidth
 
 void Renderer::Update(float deltaTime)
 {
-	// TODO: Maybe record render times in here, have a proper MS count etc.
+	particleComputeStage->Update(deltaTime);
 }
 
 void Renderer::Render()
@@ -84,7 +84,10 @@ void Renderer::Render()
 	// 3. Execute rendering passes //
 	clearBufferStage->RecordStage(commandList);
 	particleComputeStage->RecordStage(commandList);
+
+
 	screenStage->RecordStage(commandList);
+
 
 	// 4. Execute List, Present and wait for the next frame to be ready //
 	directCommands->ExecuteCommandList(backBufferIndex);

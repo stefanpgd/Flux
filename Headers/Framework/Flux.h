@@ -18,7 +18,7 @@ private:
 	void RegisterWindowClass();
 
 	void Start();
-	void Update();
+	void Update(float deltaTime);
 	void Render();
 
 	static LRESULT CALLBACK WindowsCallback(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
