@@ -10,6 +10,7 @@ struct Particle
 {
     float2 position;
     float2 velocity;
+    float mass;
 };
 
 RWTexture2D<float4> testTexture : register(u0);
@@ -49,10 +50,41 @@ void main(ComputeShaderInput IN)
 {
     Particle p = particles[IN.DispatchThreadID.x];
     
-    p.position += p.velocity;
+    const float G = 1.0f;
+    const float maxVelocity = 20.0f;
+    
+    float2 acceleration = float2(0.0, 0.0);
+    
+    float2 center = float2(512, 512);
+    
+    float2 dir = center - p.position;
+    float distance = length(dir);
+    
+    float forceStrength = (G * p.mass * 5000.0) / (distance * distance);
+    float2 force = normalize(dir) * forceStrength;
+    acceleration += force * (1.0 / p.mass);
+    
+    p.velocity += acceleration * 0.07;
+    
+    if(length(p.velocity) >= maxVelocity)
+    {
+        p.velocity = normalize(p.velocity) * maxVelocity;
+    }
+    
+    p.position += p.velocity * 0.07;
     p.position = CheckBounds(p.position);
     
-    particles[IN.DispatchThreadID.x].position = p.position;
+    particles[IN.DispatchThreadID.x] = p;
     
-    testTexture[int2(p.position)] = float4(1.0, 1.0, 1.0, 1.0f);
+    const float coreStengthColor = 0.175f;
+    const float sideStrengthColor = 0.025;
+    
+    float4 coreColor = float4(coreStengthColor, coreStengthColor, coreStengthColor, 1.0);
+    float4 sideColor = float4(sideStrengthColor, sideStrengthColor, sideStrengthColor, 1.0);
+    
+    testTexture[int2(p.position)] += coreStengthColor;
+    testTexture[int2(p.position) + int2(1, 0)] += sideColor;
+    testTexture[int2(p.position) + int2(-1, 0)] += sideColor;
+    testTexture[int2(p.position) + int2(0, 1)] += sideColor;
+    testTexture[int2(p.position) + int2(0, -1)] += sideColor;
 }

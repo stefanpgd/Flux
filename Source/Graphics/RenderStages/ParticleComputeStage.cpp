@@ -11,7 +11,7 @@
 ParticleComputeStage::ParticleComputeStage(Window* window, Texture* backBuffer) 
 	: RenderStage(window), backBuffer(backBuffer)
 {
-	particleCount = 4096;
+	particleCount = 2048 * 2 * 2 * 2 * 2;
 
 	InitializeParticles();
 	CreatePipeline();
@@ -34,7 +34,7 @@ void ParticleComputeStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> comman
 		LOG(Log::MessageType::Error, "Dispatch size is not divisble by 16");
 	}
 
-	commandList->Dispatch(particleCount, 1, 1);
+	commandList->Dispatch(dispatchSize, 1, 1);
 }
 
 void ParticleComputeStage::InitializeParticles()
@@ -42,14 +42,19 @@ void ParticleComputeStage::InitializeParticles()
 	Particle* particles = new Particle[particleCount];
 	for(int i = 0; i < particleCount; i++)
 	{
-		particles[i].position[0] = rand() % 1024;
-		particles[i].position[1] = rand() % 1024;
+		float r = RandomInRange(5.0f, 500.0f);
+		float theta = RandomInRange(0.0f, 3.14159265 * 2.0);
+
+		particles[i].position[0] = 512 + cosf(theta) * r;
+		particles[i].position[1] = 512 + sinf(theta) * r;
 
 		glm::vec2 velocity = glm::vec2(RandomInRange(-1.0f, 1.0f), RandomInRange(-1.0f, 1.0f));
 		velocity = glm::normalize(velocity);
 
 		particles[i].velocity[0] = velocity.x;
 		particles[i].velocity[1] = velocity.y;
+
+		particles[i].mass = 1.0;
 	}
 
 	particleBuffer = new DXStructuredBuffer(particles, particleCount, sizeof(Particle));

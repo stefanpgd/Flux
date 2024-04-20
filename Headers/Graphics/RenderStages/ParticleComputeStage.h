@@ -9,6 +9,7 @@ struct Particle
 {
 	float position[2];
 	float velocity[2];
+	float mass;
 };
 
 class ParticleComputeStage : public RenderStage
