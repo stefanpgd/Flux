@@ -2,6 +2,13 @@
 <tr>
 <td>
   
+<p align="center">
+<img src="https://raw.githubusercontent.com/stefanpgd/Flux/main/Assets/Logo/FluxLogo.png" alt="drawing" width="150"/>
+</p>
+
+</td>
+<td>
+
 # Flux
 
 
@@ -11,6 +18,7 @@
 </td>
 </tr>
 </table>
+</p>
 
 ---
 
