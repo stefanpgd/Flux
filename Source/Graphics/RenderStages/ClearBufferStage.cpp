@@ -13,15 +13,16 @@ ClearBufferStage::ClearBufferStage(Window* window, Texture* backBuffer) : Render
 
 void ClearBufferStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList)
 {
+	// 1. Bind pipeline & root signature //
 	commandList->SetComputeRootSignature(rootSignature->GetAddress());
 	commandList->SetPipelineState(computePipeline->GetAddress());
 
-	int threadWidth = window->GetWindowWidth() / 4;
-	int threadHeight = window->GetWindowWidth() / 4;
-
+	// 2. Bind relevant root arguments //
 	commandList->SetComputeRootDescriptorTable(0, backBuffer->GetUAV());
 
-	commandList->Dispatch(threadWidth, threadHeight, 1);
+	// 3. Clear (back buffer) texture // 
+	int threads = window->GetWindowWidth() / 4;
+	commandList->Dispatch(threads, threads, 1);
 }
 
 void ClearBufferStage::CreatePipeline()

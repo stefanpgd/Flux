@@ -87,6 +87,9 @@
     <ClCompile Include="Source\Graphics\RenderStages\ClearBufferStage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Graphics\RenderStages\ParticleComputeStage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Framework\Flux.h">
@@ -173,6 +176,9 @@
     <ClInclude Include="Headers\Graphics\RenderStages\ClearBufferStage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Graphics\RenderStages\ParticleComputeStage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Dependencies\Microsoft\d3dcompiler_47.dll" />
@@ -180,7 +186,7 @@
   <ItemGroup>
     <FxCompile Include="Source\Shaders\screen.vertex.hlsl" />
     <FxCompile Include="Source\Shaders\screen.pixel.hlsl" />
-    <FxCompile Include="Source\Shaders\hello.compute.hlsl" />
     <FxCompile Include="Source\Shaders\screenClear.compute.hlsl" />
+    <FxCompile Include="Source\Shaders\particle.compute.hlsl" />
   </ItemGroup>
 </Project>

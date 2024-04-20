@@ -19,6 +19,7 @@
 
 // Render Stages //
 #include "Graphics/RenderStages/ClearBufferStage.h"
+#include "Graphics/RenderStages/ParticleComputeStage.h"
 
 #include <cassert>
 #include <imgui.h>
@@ -35,14 +36,9 @@ DXPipeline* screenPipeline;
 Texture* computeTest;
 DXRootSignature* computeRoot;
 DXComputePipeline* computePipeline;
-DXStructuredBuffer* particleBuffer;
 
 ClearBufferStage* clearBufferStage;
-
-struct Particle
-{
-	float position[2];
-};
+ParticleComputeStage* particleComputeStage;
 
 namespace RendererInternal
 {
@@ -59,7 +55,6 @@ namespace RendererInternal
 	Texture* defaultTexture = nullptr;
 }
 using namespace RendererInternal;
-
 
 Renderer::Renderer(const std::wstring& applicationName, unsigned int windowWidth,
 	unsigned int windowHeight)
@@ -125,31 +120,8 @@ Renderer::Renderer(const std::wstring& applicationName, unsigned int windowWidth
 
 	computeTest = new Texture(textureBuffer, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, sizeof(unsigned int));
 
-	CD3DX12_DESCRIPTOR_RANGE1 computeRange[1];
-	computeRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);
-
-	CD3DX12_DESCRIPTOR_RANGE1 dataRange[1];
-	dataRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 1, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);
-
-	CD3DX12_ROOT_PARAMETER1 computeParameters[2];
-	computeParameters[0].InitAsDescriptorTable(1, &computeRange[0]);
-	computeParameters[1].InitAsDescriptorTable(1, &dataRange[0]);
-
-	computeRoot = new DXRootSignature(computeParameters, _countof(computeParameters), D3D12_ROOT_SIGNATURE_FLAG_NONE);
-	computePipeline = new DXComputePipeline(computeRoot, "Source/Shaders/hello.compute.hlsl");
-
-	srand(time(nullptr));
-
-	Particle* particles = new Particle[1024];
-	for(int i = 0; i < 1024; i++)
-	{
-		particles[i].position[0] = rand() % 1024;
-		particles[i].position[1] = rand() % 1024;
-	}
-
-	particleBuffer = new DXStructuredBuffer(particles, 1024, sizeof(Particle));
-
 	clearBufferStage = new ClearBufferStage(window, computeTest);
+	particleComputeStage = new ParticleComputeStage(window, computeTest, 1024);
 }
 
 void Renderer::Update(float deltaTime)
@@ -177,16 +149,8 @@ void Renderer::Render()
 	commandList->SetDescriptorHeaps(1, heaps);
 
 	clearBufferStage->RecordStage(commandList);
+	particleComputeStage->RecordStage(commandList);
 
-	// TEMP //
-	commandList->SetComputeRootSignature(computeRoot->GetAddress());
-	commandList->SetPipelineState(computePipeline->GetAddress());
-
-	CD3DX12_GPU_DESCRIPTOR_HANDLE uavHandle = computeTest->GetUAV();
-	commandList->SetComputeRootDescriptorTable(0, uavHandle);
-	commandList->SetComputeRootDescriptorTable(1, particleBuffer->GetUAV());
-
-	commandList->Dispatch(64, 1, 1);
 	//TransitionResource(computeTest->GetResource().Get(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
 	// 3. Setup pipeline, and prepare settings for it //
