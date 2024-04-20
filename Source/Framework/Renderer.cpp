@@ -17,6 +17,9 @@
 #include "Graphics/DepthBuffer.h"
 #include "Graphics/DXStructuredBuffer.h"
 
+// Render Stages //
+#include "Graphics/RenderStages/ClearBufferStage.h"
+
 #include <cassert>
 #include <imgui.h>
 #include <array>
@@ -33,6 +36,8 @@ Texture* computeTest;
 DXRootSignature* computeRoot;
 DXComputePipeline* computePipeline;
 DXStructuredBuffer* particleBuffer;
+
+ClearBufferStage* clearBufferStage;
 
 struct Particle
 {
@@ -143,6 +148,8 @@ Renderer::Renderer(const std::wstring& applicationName, unsigned int windowWidth
 	}
 
 	particleBuffer = new DXStructuredBuffer(particles, 1024, sizeof(Particle));
+
+	clearBufferStage = new ClearBufferStage(window, computeTest);
 }
 
 void Renderer::Update(float deltaTime)
@@ -167,8 +174,11 @@ void Renderer::Render()
 	TransitionResource(window->GetCurrentScreenBuffer().Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 	BindAndClearRenderTarget(window, &backBufferRTV, &depthView);
 
-	// TEMP //
 	commandList->SetDescriptorHeaps(1, heaps);
+
+	clearBufferStage->RecordStage(commandList);
+
+	// TEMP //
 	commandList->SetComputeRootSignature(computeRoot->GetAddress());
 	commandList->SetPipelineState(computePipeline->GetAddress());
 
