@@ -59,7 +59,7 @@ Renderer::Renderer(const std::wstring& applicationName, unsigned int windowWidth
 	computeBackBuffer = new Texture(textureBuffer, 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, sizeof(unsigned int));
 
 	clearBufferStage = new ClearBufferStage(window, computeBackBuffer);
-	particleComputeStage = new ParticleComputeStage(window, computeBackBuffer, 1024);
+	particleComputeStage = new ParticleComputeStage(window, computeBackBuffer);
 	screenStage = new ScreenStage(window, computeBackBuffer);
 }
 

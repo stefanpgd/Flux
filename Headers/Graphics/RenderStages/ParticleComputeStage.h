@@ -8,12 +8,13 @@ class DXStructuredBuffer;
 struct Particle
 {
 	float position[2];
+	float velocity[2];
 };
 
 class ParticleComputeStage : public RenderStage
 {
 public:
-	ParticleComputeStage(Window* window, Texture* backBuffer, unsigned int particleCount);
+	ParticleComputeStage(Window* window, Texture* backBuffer);
 
 	void RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList) override;
 

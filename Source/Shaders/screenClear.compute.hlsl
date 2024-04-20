@@ -11,7 +11,7 @@ RWTexture2D<float4> targetTexture : register(u0);
 [numthreads(4, 4, 1)]
 void main(ComputeShaderInput IN)
 {
-    float4 currentColor = targetTexture[IN.DispatchThreadID.xy] * 0.8f;
+    float4 currentColor = targetTexture[IN.DispatchThreadID.xy] * 0.9f;
     
     //const float4 clearColor = float4(0.0, 0.0, 0.0, 1.0f);
     targetTexture[IN.DispatchThreadID.xy] = currentColor;

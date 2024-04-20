@@ -9,23 +9,50 @@ struct ComputeShaderInput
 struct Particle
 {
     float2 position;
+    float2 velocity;
 };
 
 RWTexture2D<float4> testTexture : register(u0);
 RWStructuredBuffer<Particle> particles : register(u1);
+
+float2 CheckBounds(float2 position)
+{
+    int width;
+    int height;
+    
+    // Grab texture bounds //
+    testTexture.GetDimensions(width, height);
+
+    if(position.x > width)
+    {
+        position.x = 0.0;
+    }
+    else if(position.x < 0.0)
+    {
+        position.x = width - 0.1;
+    }
+    
+    if(position.y > height)
+    {
+        position.y = 0.0;
+    }
+    else if(position.y < 0.0)
+    {
+        position.y = height - 0.1;
+    }
+    
+    return position;
+}
 
 [numthreads(16, 1, 1)]
 void main(ComputeShaderInput IN)
 {
     Particle p = particles[IN.DispatchThreadID.x];
     
-    p.position.x += 1.0f;
-    if(p.position.x > 1023.0f)
-    {
-        p.position.x = 0.0f;
-    }
+    p.position += p.velocity;
+    p.position = CheckBounds(p.position);
     
-    particles[IN.DispatchThreadID.x].position.x = p.position.x;
+    particles[IN.DispatchThreadID.x].position = p.position;
     
     testTexture[int2(p.position)] = float4(1.0, 1.0, 1.0, 1.0f);
 }

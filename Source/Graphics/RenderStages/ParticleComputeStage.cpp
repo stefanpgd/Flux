@@ -4,9 +4,15 @@
 #include "Graphics/DXRootSignature.h"
 #include "Graphics/Texture.h"
 
-ParticleComputeStage::ParticleComputeStage(Window* window, Texture* backBuffer, 
-	unsigned int particleCount) : RenderStage(window), backBuffer(backBuffer), particleCount(particleCount)
+#include <glm.hpp>
+#include "Utilities/Random.h"
+#include "Utilities/Logger.h"
+
+ParticleComputeStage::ParticleComputeStage(Window* window, Texture* backBuffer) 
+	: RenderStage(window), backBuffer(backBuffer)
 {
+	particleCount = 4096;
+
 	InitializeParticles();
 	CreatePipeline();
 }
@@ -22,7 +28,13 @@ void ParticleComputeStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> comman
 	commandList->SetComputeRootDescriptorTable(1, particleBuffer->GetUAV());
 
 	// 3. Execute particle compute //
-	commandList->Dispatch(64, 1, 1);
+	unsigned int dispatchSize = particleCount / 16;
+	if(dispatchSize % 16 != 0)
+	{
+		LOG(Log::MessageType::Error, "Dispatch size is not divisble by 16");
+	}
+
+	commandList->Dispatch(particleCount, 1, 1);
 }
 
 void ParticleComputeStage::InitializeParticles()
@@ -32,6 +44,12 @@ void ParticleComputeStage::InitializeParticles()
 	{
 		particles[i].position[0] = rand() % 1024;
 		particles[i].position[1] = rand() % 1024;
+
+		glm::vec2 velocity = glm::vec2(RandomInRange(-1.0f, 1.0f), RandomInRange(-1.0f, 1.0f));
+		velocity = glm::normalize(velocity);
+
+		particles[i].velocity[0] = velocity.x;
+		particles[i].velocity[1] = velocity.y;
 	}
 
 	particleBuffer = new DXStructuredBuffer(particles, particleCount, sizeof(Particle));

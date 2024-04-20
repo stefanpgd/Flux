@@ -3,8 +3,8 @@
 #include "Graphics/DXAccess.h"
 #include <stb_image.h>
 
-Texture::Texture(void* data, int width, int height,
-	DXGI_FORMAT format, unsigned int formatSizeInBytes) : format(format), formatSizeInBytes(formatSizeInBytes)
+Texture::Texture(void* data, int width, int height, DXGI_FORMAT format, unsigned int formatSizeInBytes) 
+	: format(format), formatSizeInBytes(formatSizeInBytes), width(width), height(height)
 {
 	UploadData(data, width, height);
 }
@@ -14,9 +14,24 @@ Texture::~Texture()
 	textureResource.Reset();
 }
 
+int Texture::GetWidth()
+{
+	return width;
+}
+
+int Texture::GetHeight()
+{
+	return height;
+}
+
 int Texture::GetSRVIndex()
 {
 	return srvIndex;
+}
+
+int Texture::GetUAVIndex()
+{
+	return uavIndex;
 }
 
 CD3DX12_GPU_DESCRIPTOR_HANDLE Texture::GetSRV()

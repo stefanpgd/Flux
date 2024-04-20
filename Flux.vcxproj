@@ -167,6 +167,7 @@
     <ClCompile Include="Source\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\Utilities\Random.h" />
     <ClInclude Include="Headers\Graphics\RenderStages\ClearBufferStage.h" />
     <ClInclude Include="Dependencies\ImGui\imconfig.h" />
     <ClInclude Include="Dependencies\ImGui\imgui.h" />
