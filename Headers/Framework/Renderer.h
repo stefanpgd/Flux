@@ -5,6 +5,11 @@
 #include <wrl.h>
 using namespace Microsoft::WRL;
 
+class ClearBufferStage;
+class ParticleComputeStage;
+class ScreenStage;
+class Texture;
+
 class Renderer
 {
 public:
@@ -19,4 +24,9 @@ private:
 	void InitializeImGui();
 
 private:
+	ClearBufferStage* clearBufferStage;
+	ParticleComputeStage* particleComputeStage;
+	ScreenStage* screenStage;
+
+	Texture* computeBackBuffer;
 };

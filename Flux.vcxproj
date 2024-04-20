@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Graphics\RenderStages\ScreenStage.cpp" />
     <ClCompile Include="Source\Graphics\RenderStages\ParticleComputeStage.cpp" />
     <ClCompile Include="Source\Graphics\RenderStages\ClearBufferStage.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui.cpp" />
@@ -195,6 +196,7 @@
     <ClInclude Include="Headers\Utilities\Logger.h" />
     <ClInclude Include="Headers\Graphics\RenderStage.h" />
     <ClInclude Include="Headers\Graphics\RenderStages\ParticleComputeStage.h" />
+    <ClInclude Include="Headers\Graphics\RenderStages\ScreenStage.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Dependencies\Microsoft\d3dcompiler_47.dll">
