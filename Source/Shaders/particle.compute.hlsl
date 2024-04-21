@@ -89,6 +89,7 @@ void main(ComputeShaderInput IN)
     
     const float coreStengthColor = 0.175f;
     const float sideStrengthColor = 0.015;
+    const float outerStrengthColor = 0.005;
     
     float4 coreColor = float4(coreStengthColor, coreStengthColor, coreStengthColor, 1.0);
     float4 sideColor = float4(sideStrengthColor, sideStrengthColor, sideStrengthColor, 1.0);
@@ -98,4 +99,14 @@ void main(ComputeShaderInput IN)
     testTexture[int2(p.position) + int2(-1, 0)] += sideColor;
     testTexture[int2(p.position) + int2(0, 1)] += sideColor;
     testTexture[int2(p.position) + int2(0, -1)] += sideColor;
+    
+    testTexture[int2(p.position) + int2(1, 1)] += sideColor;
+    testTexture[int2(p.position) + int2(-1, -1)] += sideColor;
+    testTexture[int2(p.position) + int2(-1, 1)] += sideColor;
+    testTexture[int2(p.position) + int2(1, -1)] += sideColor;
+    
+    testTexture[int2(p.position) + int2(2, 0)] += outerStrengthColor;
+    testTexture[int2(p.position) + int2(-2, 0)] += outerStrengthColor;
+    testTexture[int2(p.position) + int2(0, 2)] += outerStrengthColor;
+    testTexture[int2(p.position) + int2(0, -2)] += outerStrengthColor;
 }
