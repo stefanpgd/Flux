@@ -95,7 +95,6 @@ void ParticleComputeStage::CreatePipeline()
 	computeParameters[1].InitAsDescriptorTable(1, &particleRange[0]);
 	computeParameters[2].InitAsConstants(6, 0, 0);
 
-
 	rootSignature = new DXRootSignature(computeParameters, _countof(computeParameters), D3D12_ROOT_SIGNATURE_FLAG_NONE);
 	computePipeline = new DXComputePipeline(rootSignature, "Source/Shaders/particle.compute.hlsl");
 }
