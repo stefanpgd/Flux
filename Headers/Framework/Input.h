@@ -1,4 +1,5 @@
 #include <imgui.h>
+#include <map>
 
 enum class KeyCode
 {
@@ -44,11 +45,18 @@ enum class MouseCode
 class Input
 {
 public:
-	static bool GetKey(KeyCode key);
-	static bool GetMouseButton(MouseCode button);
+	static void Update();
 
+	static bool GetKey(KeyCode key);
+	static bool GetKeyDown(KeyCode key);
+
+	static bool GetMouseButton(MouseCode button);
 	static int GetMouseX();
 	static int GetMouseY();
 	static int GetMouseVelocityX();
 	static int GetMouseVelocityY();
+
+private:
+	static int frameCount;
+	static std::map<KeyCode, int> keysDown;
 };

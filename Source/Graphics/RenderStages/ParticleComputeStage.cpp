@@ -6,6 +6,7 @@
 
 #include "Utilities/Random.h"
 #include "Utilities/Logger.h"
+#include "Framework/Input.h"
 
 #include <glm.hpp>
 #include <imgui.h>
@@ -26,6 +27,11 @@ void ParticleComputeStage::Update(float deltaTime)
 	settings.deltaTime = deltaTime;
 	settings.positionX = ImGui::GetIO().MousePos.x;
 	settings.positionY = ImGui::GetIO().MousePos.y;
+
+	if(Input::GetKeyDown(KeyCode::F))
+	{
+		settings.G *= -1;
+	}
 
 	ImGui::Begin("Test Hello");
 	ImGui::DragFloat("G", &settings.G, 0.01f, 0.01f, 10.0f);

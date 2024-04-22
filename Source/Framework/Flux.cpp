@@ -1,6 +1,8 @@
 #include "Framework/Flux.h"
 #include "Framework/Renderer.h"
 #include "Framework/Editor.h"
+#include "Framework/Input.h"
+#include "Utilities/Logger.h"
 
 #define WIN32_LEAN_AND_MEAN 
 #include <Windows.h>
@@ -68,6 +70,13 @@ void Flux::Start()
 
 void Flux::Update(float deltaTime)
 {
+	Input::Update();
+
+	if(Input::GetKeyDown(KeyCode::T))
+	{
+		LOG(Log::MessageType::Error, "IM HELD");
+	}
+
 	renderer->Update(deltaTime);
 	editor->Update(deltaTime);
 }
