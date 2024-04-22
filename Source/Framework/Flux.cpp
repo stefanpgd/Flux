@@ -1,5 +1,6 @@
 #include "Framework/Flux.h"
 #include "Framework/Renderer.h"
+#include "Framework/Editor.h"
 
 #define WIN32_LEAN_AND_MEAN 
 #include <Windows.h>
@@ -13,11 +14,19 @@
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+// TODO:
+// I probably need to add something that falls under a 'ParticleSimulation' base class
+// It contains update, render etc. It becomes a self-contained system
+// Editor, renderer and other systems can request data from it. Instead of it being hacked into the renderer
+
+// TODO: Add resizing of windows / simulation
+
 Flux::Flux()
 {
 	RegisterWindowClass();
 
 	renderer = new Renderer(applicationName, 1024, 1024);
+	editor = new Editor();
 }
 
 void Flux::Run()
@@ -60,6 +69,7 @@ void Flux::Start()
 void Flux::Update(float deltaTime)
 {
 	renderer->Update(deltaTime);
+	editor->Update(deltaTime);
 }
 
 void Flux::Render()

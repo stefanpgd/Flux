@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Framework\Editor.cpp" />
     <ClCompile Include="Source\Graphics\RenderStages\ScreenStage.cpp" />
     <ClCompile Include="Source\Graphics\RenderStages\ParticleComputeStage.cpp" />
     <ClCompile Include="Source\Graphics\RenderStages\ClearBufferStage.cpp" />
@@ -167,6 +168,7 @@
     <ClCompile Include="Source\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\Framework\Editor.h" />
     <ClInclude Include="Headers\Utilities\Random.h" />
     <ClInclude Include="Headers\Graphics\RenderStages\ClearBufferStage.h" />
     <ClInclude Include="Dependencies\ImGui\imconfig.h" />

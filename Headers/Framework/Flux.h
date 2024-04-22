@@ -6,6 +6,7 @@
 #include <string>
 
 class Renderer;
+class Editor;
 
 class Flux
 {
@@ -29,4 +30,5 @@ private:
 
 	// Systems //
 	Renderer* renderer;
+	Editor* editor;
 };
