@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Framework\Input.cpp" />
     <ClCompile Include="Source\Framework\Editor.cpp" />
     <ClCompile Include="Source\Graphics\RenderStages\ScreenStage.cpp" />
     <ClCompile Include="Source\Graphics\RenderStages\ParticleComputeStage.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="Headers\Graphics\RenderStage.h" />
     <ClInclude Include="Headers\Graphics\RenderStages\ParticleComputeStage.h" />
     <ClInclude Include="Headers\Graphics\RenderStages\ScreenStage.h" />
+    <ClInclude Include="Headers\Framework\Input.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Dependencies\Microsoft\d3dcompiler_47.dll">
