@@ -5,28 +5,21 @@
 #include <wrl.h>
 using namespace Microsoft::WRL;
 
-class ClearBufferStage;
-class ParticleComputeStage;
-class ScreenStage;
-class Texture;
+class ParticleSimulation;
 
 class Renderer
 {
 public:
 	Renderer(const std::wstring& applicationName, unsigned int windowWidth, unsigned int windowHeight);
-
-	void Update(float deltaTime);
+	
 	void Render();
-
 	void Resize();
+
+	void SetParticleSimulation(ParticleSimulation* simulation);
 
 private:
 	void InitializeImGui();
 
 private:
-	ClearBufferStage* clearBufferStage;
-	ParticleComputeStage* particleComputeStage;
-	ScreenStage* screenStage;
-
-	Texture* computeBackBuffer;
+	ParticleSimulation* activeSimulation;
 };

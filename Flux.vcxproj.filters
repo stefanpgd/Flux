@@ -87,7 +87,7 @@
     <ClCompile Include="Source\Graphics\RenderStages\ClearBufferStage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\RenderStages\ParticleComputeStage.cpp">
+    <ClCompile Include="Source\Graphics\RenderStages\SimpleNBodyComputeStage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\RenderStages\ScreenStage.cpp">
@@ -97,6 +97,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Framework\Input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Framework\ParticleSimulation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Framework\ParticleSimulations\SimpleNBodySimulation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -185,7 +191,7 @@
     <ClInclude Include="Headers\Graphics\RenderStages\ClearBufferStage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Graphics\RenderStages\ParticleComputeStage.h">
+    <ClInclude Include="Headers\Graphics\RenderStages\SimpleNBodyComputeStage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Graphics\RenderStages\ScreenStage.h">
@@ -200,14 +206,20 @@
     <ClInclude Include="Headers\Framework\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Framework\ParticleSimulation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Framework\ParticleSimulations\SimpleNBodySimulation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Dependencies\Microsoft\d3dcompiler_47.dll" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Source\Shaders\screen.vertex.hlsl" />
-    <FxCompile Include="Source\Shaders\screen.pixel.hlsl" />
-    <FxCompile Include="Source\Shaders\screenClear.compute.hlsl" />
-    <FxCompile Include="Source\Shaders\particle.compute.hlsl" />
+    <FxCompile Include="Source\Shaders\SimpleNBody\screen.vertex.hlsl" />
+    <FxCompile Include="Source\Shaders\SimpleNBody\screen.pixel.hlsl" />
+    <FxCompile Include="Source\Shaders\SimpleNBody\screenClear.compute.hlsl" />
+    <FxCompile Include="Source\Shaders\SimpleNBody\simpleNBody.compute.hlsl" />
   </ItemGroup>
 </Project>

@@ -14,21 +14,21 @@
 #include <imgui_impl_dx12.h>
 #include <imgui_impl_win32.h>
 
+#include "Framework/ParticleSimulations/SimpleNBodySimulation.h"
+
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-// TODO:
-// I probably need to add something that falls under a 'ParticleSimulation' base class
-// It contains update, render etc. It becomes a self-contained system
-// Editor, renderer and other systems can request data from it. Instead of it being hacked into the renderer
-
 // TODO: Add resizing of windows / simulation
-
 Flux::Flux()
 {
 	RegisterWindowClass();
 
 	renderer = new Renderer(applicationName, 1024, 1024);
 	editor = new Editor();
+
+	activeSimulation = new SimpleNBodySimulation(pow(2, 15));
+
+	renderer->SetParticleSimulation(activeSimulation);
 }
 
 void Flux::Run()
@@ -71,14 +71,13 @@ void Flux::Start()
 void Flux::Update(float deltaTime)
 {
 	Input::Update();
-
-	if(Input::GetKeyDown(KeyCode::T))
-	{
-		LOG(Log::MessageType::Error, "IM HELD");
-	}
-
-	renderer->Update(deltaTime);
 	editor->Update(deltaTime);
+	activeSimulation->Update(deltaTime);
+
+	if(Input::GetKeyDown(KeyCode::Escape))
+	{
+		runApplication = false;
+	}
 }
 
 void Flux::Render()

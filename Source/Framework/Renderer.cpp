@@ -1,4 +1,5 @@
 #include "Framework/Renderer.h"
+#include "Framework/ParticleSimulation.h"
 
 // DirectX Components //
 #include "Graphics/DXAccess.h"
@@ -9,11 +10,6 @@
 // Renderer Components //
 #include "Graphics/Window.h"
 #include "Graphics/Texture.h"
-
-// Render Stages //
-#include "Graphics/RenderStages/ClearBufferStage.h"
-#include "Graphics/RenderStages/ParticleComputeStage.h"
-#include "Graphics/RenderStages/ScreenStage.h"
 
 #include <cassert>
 #include <imgui.h>
@@ -53,19 +49,6 @@ Renderer::Renderer(const std::wstring& applicationName, unsigned int windowWidth
 	window = new Window(applicationName, windowWidth, windowHeight);
 
 	InitializeImGui();
-
-	// Variables relevant to the render stages & compute pipeline(s) //
-	unsigned int* textureBuffer = new unsigned int[1024 * 1024];
-	computeBackBuffer = new Texture(textureBuffer, 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, sizeof(unsigned int));
-
-	clearBufferStage = new ClearBufferStage(window, computeBackBuffer);
-	particleComputeStage = new ParticleComputeStage(window, computeBackBuffer);
-	screenStage = new ScreenStage(window, computeBackBuffer);
-}
-
-void Renderer::Update(float deltaTime)
-{
-	particleComputeStage->Update(deltaTime);
 }
 
 void Renderer::Render()
@@ -81,13 +64,8 @@ void Renderer::Render()
 	// 2. Bind heap(s) that will be required for the pipelines //
 	commandList->SetDescriptorHeaps(1, heaps);
 
-	// 3. Execute rendering passes //
-	clearBufferStage->RecordStage(commandList);
-	particleComputeStage->RecordStage(commandList);
-
-
-	screenStage->RecordStage(commandList);
-
+	// 3. Record rendering stages for Particle Simulation //
+	activeSimulation->Render(commandList);
 
 	// 4. Execute List, Present and wait for the next frame to be ready //
 	directCommands->ExecuteCommandList(backBufferIndex);
@@ -99,6 +77,11 @@ void Renderer::Resize()
 {
 	directCommands->Flush();
 	window->Resize();
+}
+
+void Renderer::SetParticleSimulation(ParticleSimulation* simulation)
+{
+	activeSimulation = simulation;
 }
 
 void Renderer::InitializeImGui()

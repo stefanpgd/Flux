@@ -1,4 +1,6 @@
-#include "Graphics/RenderStages/ParticleComputeStage.h"
+#include "Graphics/RenderStages/SimpleNBodyComputeStage.h"
+#include "Framework/ParticleSimulations/SimpleNBodySimulation.h"
+
 #include "Graphics/DXComputePipeline.h"
 #include "Graphics/DXStructuredBuffer.h"
 #include "Graphics/DXRootSignature.h"
@@ -11,42 +13,16 @@
 #include <glm.hpp>
 #include <imgui.h>
 
-ParticleComputeStage::ParticleComputeStage(Window* window, Texture* backBuffer) 
-	: RenderStage(window), backBuffer(backBuffer)
+SimpleNBodyComputeStage::SimpleNBodyComputeStage(Window* window, Texture* backBuffer, SimpleNBodySettings* settings)
+	: RenderStage(window), backBuffer(backBuffer), settings(settings)
 {
 	particleCount = pow(2, 15);
 
-	settingsBuffer = new DXStructuredBuffer(static_cast<void*>(&settings), 1, sizeof(SimulationSettings));
 	InitializeParticles();
-
 	CreatePipeline();
 }
 
-void ParticleComputeStage::Update(float deltaTime)
-{
-	settings.deltaTime = deltaTime;
-	settings.positionX = ImGui::GetIO().MousePos.x;
-	settings.positionY = ImGui::GetIO().MousePos.y;
-
-	// TODO: Simulation Speed ( deltaTime multiplier )
-
-	if(Input::GetKeyDown(KeyCode::F))
-	{
-		settings.G *= -1;
-	}
-
-	ImGui::Begin("Simplified N-Body Settings");
-	ImGui::DragFloat("G", &settings.G, 0.01f, 0.01f, 10.0f);
-	ImGui::DragFloat("Max Velocity", &settings.maxVelocity, 0.1f, 0.01f, 500.0f);
-	ImGui::DragFloat("Mouse Mass", &settings.mouseMass, 10.0f);
-	ImGui::Separator();
-	ImGui::Text("Particle Count: %i", particleCount);
-	ImGui::Text("To Flip Gravity - Press F");
-
-	ImGui::End();
-}
-
-void ParticleComputeStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList)
+void SimpleNBodyComputeStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList)
 {
 	// 1. Bind root signature & pipeline state //
 	commandList->SetComputeRootSignature(rootSignature->GetAddress());
@@ -55,7 +31,7 @@ void ParticleComputeStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> comman
 	// 2. Bind root arguments //
 	commandList->SetComputeRootDescriptorTable(0, backBuffer->GetUAV());
 	commandList->SetComputeRootDescriptorTable(1, particleBuffer->GetUAV());
-	commandList->SetComputeRoot32BitConstants(2, 6, &settings, 0);
+	commandList->SetComputeRoot32BitConstants(2, 6, settings, 0);
 
 	// 3. Execute particle compute //
 	unsigned int dispatchSize = particleCount / 16;
@@ -67,7 +43,7 @@ void ParticleComputeStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> comman
 	commandList->Dispatch(dispatchSize, 1, 1);
 }
 
-void ParticleComputeStage::InitializeParticles()
+void SimpleNBodyComputeStage::InitializeParticles()
 {
 	Particle* particles = new Particle[particleCount];
 	for(int i = 0; i < particleCount; i++)
@@ -90,7 +66,7 @@ void ParticleComputeStage::InitializeParticles()
 	particleBuffer = new DXStructuredBuffer(particles, particleCount, sizeof(Particle));
 }
 
-void ParticleComputeStage::CreatePipeline()
+void SimpleNBodyComputeStage::CreatePipeline()
 {
 	CD3DX12_DESCRIPTOR_RANGE1 computeRange[1];
 	computeRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);
@@ -107,5 +83,5 @@ void ParticleComputeStage::CreatePipeline()
 	computeParameters[2].InitAsConstants(6, 0, 0);
 
 	rootSignature = new DXRootSignature(computeParameters, _countof(computeParameters), D3D12_ROOT_SIGNATURE_FLAG_NONE);
-	computePipeline = new DXComputePipeline(rootSignature, "Source/Shaders/particle.compute.hlsl");
+	computePipeline = new DXComputePipeline(rootSignature, "Source/Shaders/SimpleNBody/simpleNBody.compute.hlsl");
 }

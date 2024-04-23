@@ -34,5 +34,5 @@ void ClearBufferStage::CreatePipeline()
 	clearRootParameters[0].InitAsDescriptorTable(1, &textureRange[0]);
 
 	rootSignature = new DXRootSignature(clearRootParameters, _countof(clearRootParameters));
-	computePipeline = new DXComputePipeline(rootSignature, "Source/Shaders/screenClear.compute.hlsl");
+	computePipeline = new DXComputePipeline(rootSignature, "Source/Shaders/SimpleNBody/screenClear.compute.hlsl");
 }

@@ -7,6 +7,7 @@
 
 class Renderer;
 class Editor;
+class ParticleSimulation;
 
 class Flux
 {
@@ -31,4 +32,6 @@ private:
 	// Systems //
 	Renderer* renderer;
 	Editor* editor;
+
+	ParticleSimulation* activeSimulation;
 };
