@@ -28,15 +28,20 @@ void ParticleComputeStage::Update(float deltaTime)
 	settings.positionX = ImGui::GetIO().MousePos.x;
 	settings.positionY = ImGui::GetIO().MousePos.y;
 
+	// TODO: Simulation Speed ( deltaTime multiplier )
+
 	if(Input::GetKeyDown(KeyCode::F))
 	{
 		settings.G *= -1;
 	}
 
-	ImGui::Begin("Test Hello");
+	ImGui::Begin("Simplified N-Body Settings");
 	ImGui::DragFloat("G", &settings.G, 0.01f, 0.01f, 10.0f);
 	ImGui::DragFloat("Max Velocity", &settings.maxVelocity, 0.1f, 0.01f, 500.0f);
 	ImGui::DragFloat("Mouse Mass", &settings.mouseMass, 10.0f);
+	ImGui::Separator();
+	ImGui::Text("Particle Count: %i", particleCount);
+	ImGui::Text("To Flip Gravity - Press F");
 
 	ImGui::End();
 }
