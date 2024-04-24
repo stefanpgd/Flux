@@ -35,20 +35,20 @@ float2 CheckBounds(float2 position)
     // Grab texture bounds //
     testTexture.GetDimensions(width, height);
 
-    if(position.x > width)
+    if (position.x > width)
     {
         position.x = 0.0;
     }
-    else if(position.x < 0.0)
+    else if (position.x < 0.0)
     {
         position.x = width - 0.1;
     }
     
-    if(position.y > height)
+    if (position.y > height)
     {
         position.y = 0.0;
     }
-    else if(position.y < 0.0)
+    else if (position.y < 0.0)
     {
         position.y = height - 0.1;
     }
@@ -56,33 +56,63 @@ float2 CheckBounds(float2 position)
     return position;
 }
 
-[numthreads(16, 1, 1)]
+static uint particleCount = 32768;
+
+[numthreads(64, 1, 1)]
 void main(ComputeShaderInput IN)
 {
-    Particle p = particles[IN.DispatchThreadID.x];
+    // REPLACE 3 with actual ParticleCount
+    if (IN.DispatchThreadID.x >= particleCount)
+    {
+        return;
+    }
     
     const float G = settings.G;
     const float maxVelocity = settings.maxVelocity;
-    
     float2 acceleration = float2(0.0, 0.0);
     
-    float2 center = float2(settings.positionX, settings.positionY);
+    uint particleIndex = IN.DispatchThreadID.x;
+    Particle p = particles[particleIndex];
     
-    float2 dir = center - p.position;
-    float distance = length(dir);
+    for (uint i = 0; i < particleCount; i++)
+    {
+        if(particleIndex == i)
+        {
+            continue;
+        }
+        
+        Particle p2 = particles[i];
+        
+        
+        float2 dir = p2.position - p.position;
+        float distance = length(dir);
+        float forceStrength = (G * p.mass * p2.mass) / (distance * distance);
+        
+        if (isnan(forceStrength))
+        {
+            continue;
+        }
+        
+        float2 force = normalize(dir) * forceStrength;
+        acceleration += force * (1.0 / p.mass);
+    }
     
-    float forceStrength = (G * p.mass * 5000.0) / (distance * distance);
-    float2 force = normalize(dir) * forceStrength;
-    acceleration += force * (1.0 / p.mass);
+    p.velocity += acceleration * settings.deltaTime;
     
-    p.velocity += acceleration * 0.07;
+    float vLength = length(p.velocity);
     
-    if(length(p.velocity) >= maxVelocity)
+    if (length(p.velocity) >= maxVelocity)
     {
         p.velocity = normalize(p.velocity) * maxVelocity;
     }
     
-    p.position += p.velocity * 0.07;
+    const float minV = 15.5f;
+    if(vLength < minV)
+    {
+        //p.velocity = normalize(p.velocity) * minV;
+    }
+    
+    p.position += p.velocity * settings.deltaTime;
     p.position = CheckBounds(p.position);
     
     particles[IN.DispatchThreadID.x] = p;
@@ -109,4 +139,53 @@ void main(ComputeShaderInput IN)
     testTexture[int2(p.position) + int2(-2, 0)] += outerStrengthColor;
     testTexture[int2(p.position) + int2(0, 2)] += outerStrengthColor;
     testTexture[int2(p.position) + int2(0, -2)] += outerStrengthColor;
+    
+    //const float G = settings.G;
+    //const float maxVelocity = settings.maxVelocity;
+    //
+    //float2 acceleration = float2(0.0, 0.0);
+    //
+    //float2 center = float2(settings.positionX, settings.positionY);
+    //
+    //float2 dir = center - p.position;
+    //float distance = length(dir);
+    //
+    //float forceStrength = (G * p.mass * 5000.0) / (distance * distance);
+    //float2 force = normalize(dir) * forceStrength;
+    //acceleration += force * (1.0 / p.mass);
+    //
+    //p.velocity += acceleration * 0.07;
+    //
+    //if(length(p.velocity) >= maxVelocity)
+    //{
+    //    p.velocity = normalize(p.velocity) * maxVelocity;
+    //}
+    //
+    //p.position += p.velocity * 0.07;
+    //p.position = CheckBounds(p.position);
+    //
+    //particles[IN.DispatchThreadID.x] = p;
+    //
+    //const float coreStengthColor = 0.175f;
+    //const float sideStrengthColor = 0.015;
+    //const float outerStrengthColor = 0.005;
+    //
+    //float4 coreColor = float4(coreStengthColor, coreStengthColor, coreStengthColor, 1.0);
+    //float4 sideColor = float4(sideStrengthColor, sideStrengthColor, sideStrengthColor, 1.0);
+    //
+    //testTexture[int2(p.position)] += coreStengthColor;
+    //testTexture[int2(p.position) + int2(1, 0)] += sideColor;
+    //testTexture[int2(p.position) + int2(-1, 0)] += sideColor;
+    //testTexture[int2(p.position) + int2(0, 1)] += sideColor;
+    //testTexture[int2(p.position) + int2(0, -1)] += sideColor;
+    //
+    //testTexture[int2(p.position) + int2(1, 1)] += sideColor;
+    //testTexture[int2(p.position) + int2(-1, -1)] += sideColor;
+    //testTexture[int2(p.position) + int2(-1, 1)] += sideColor;
+    //testTexture[int2(p.position) + int2(1, -1)] += sideColor;
+    //
+    //testTexture[int2(p.position) + int2(2, 0)] += outerStrengthColor;
+    //testTexture[int2(p.position) + int2(-2, 0)] += outerStrengthColor;
+    //testTexture[int2(p.position) + int2(0, 2)] += outerStrengthColor;
+    //testTexture[int2(p.position) + int2(0, -2)] += outerStrengthColor;
 }

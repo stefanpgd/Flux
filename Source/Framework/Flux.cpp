@@ -18,7 +18,6 @@
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-// TODO: Add resizing of windows / simulation
 Flux::Flux()
 {
 	RegisterWindowClass();
@@ -26,7 +25,7 @@ Flux::Flux()
 	renderer = new Renderer(applicationName, 1024, 1024);
 	editor = new Editor();
 
-	activeSimulation = new SimpleNBodySimulation(pow(2, 20));
+	activeSimulation = new SimpleNBodySimulation(32768);
 
 	renderer->SetParticleSimulation(activeSimulation);
 }

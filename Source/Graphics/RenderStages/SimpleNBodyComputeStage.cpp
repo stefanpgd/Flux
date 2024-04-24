@@ -16,7 +16,7 @@
 SimpleNBodyComputeStage::SimpleNBodyComputeStage(Window* window, Texture* backBuffer, SimpleNBodySettings* settings)
 	: RenderStage(window), backBuffer(backBuffer), settings(settings)
 {
-	particleCount = pow(2, 15);
+	particleCount = settings->particleCount;
 
 	InitializeParticles();
 	CreatePipeline();
@@ -34,12 +34,7 @@ void SimpleNBodyComputeStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> com
 	commandList->SetComputeRoot32BitConstants(2, 6, settings, 0);
 
 	// 3. Execute particle compute //
-	unsigned int dispatchSize = particleCount / 16;
-	if(dispatchSize % 16 != 0)
-	{
-		LOG(Log::MessageType::Error, "Dispatch size is not divisble by 16");
-	}
-
+	unsigned int dispatchSize = particleCount / 64;
 	commandList->Dispatch(dispatchSize, 1, 1);
 }
 
@@ -60,7 +55,7 @@ void SimpleNBodyComputeStage::InitializeParticles()
 		particles[i].velocity[0] = velocity.x;
 		particles[i].velocity[1] = velocity.y;
 
-		particles[i].mass = RandomInRange(1.0, 25.0f);
+		particles[i].mass = RandomInRange(0.5f, 25.0f);
 	}
 
 	particleBuffer = new DXStructuredBuffer(particles, particleCount, sizeof(Particle));

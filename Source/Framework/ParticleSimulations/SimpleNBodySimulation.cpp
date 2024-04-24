@@ -14,6 +14,8 @@
 // TODO: Be able to pass different sizes instead of hard-coding it
 SimpleNBodySimulation::SimpleNBodySimulation(int particleCount) : ParticleSimulation(particleCount)
 {
+	settings.particleCount = particleCount;
+
 	// Variables relevant to the render stages & compute pipeline(s) //
 	Window* window = DXAccess::GetWindow();
 
