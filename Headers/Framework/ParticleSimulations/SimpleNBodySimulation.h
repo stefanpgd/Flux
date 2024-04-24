@@ -17,6 +17,7 @@ struct SimpleNBodySettings
 	float mouseMass = 5000.0f;
 	float positionX = 512;
 	float positionY = 512;
+	float trailStrength = 0.9f; // 0 - 1 // 
 };
 
 // TODO: Depending if we end up having full Nbody, maybe rename or not 

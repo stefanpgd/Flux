@@ -20,7 +20,7 @@ SimpleNBodySimulation::SimpleNBodySimulation(int particleCount) : ParticleSimula
 	unsigned int* textureBuffer = new unsigned int[1024 * 1024];
 	renderBuffer = new Texture(textureBuffer, 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, sizeof(unsigned int));
 
-	clearBufferStage = new ClearBufferStage(window, renderBuffer);
+	clearBufferStage = new ClearBufferStage(window, renderBuffer, &settings);
 	nBodyComputeStage = new SimpleNBodyComputeStage(window, renderBuffer, &settings);
 	screenStage = new ScreenStage(window, renderBuffer);
 }
@@ -42,6 +42,7 @@ void SimpleNBodySimulation::Update(float deltaTime)
 	ImGui::DragFloat("G", &settings.G, 0.01f, 0.01f, 10.0f);
 	ImGui::DragFloat("Max Velocity", &settings.maxVelocity, 0.1f, 0.01f, 500.0f);
 	ImGui::DragFloat("Mouse Mass", &settings.mouseMass, 10.0f);
+	ImGui::SliderFloat("Trail Strength", &settings.trailStrength, 0.0f, 1.0f);
 	ImGui::Separator();
 	ImGui::Text("Particle Count: %i", particleCount);
 	ImGui::Text("To Flip Gravity - Press F");

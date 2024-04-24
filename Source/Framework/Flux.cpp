@@ -26,7 +26,7 @@ Flux::Flux()
 	renderer = new Renderer(applicationName, 1024, 1024);
 	editor = new Editor();
 
-	activeSimulation = new SimpleNBodySimulation(pow(2, 15));
+	activeSimulation = new SimpleNBodySimulation(pow(2, 20));
 
 	renderer->SetParticleSimulation(activeSimulation);
 }
