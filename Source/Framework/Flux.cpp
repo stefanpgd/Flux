@@ -15,6 +15,7 @@
 #include <imgui_impl_win32.h>
 
 #include "Framework/ParticleSimulations/SimpleNBodySimulation.h"
+#include "Framework/ParticleSimulations/NBodySimulation.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -25,7 +26,7 @@ Flux::Flux()
 	renderer = new Renderer(applicationName, 1024, 1024);
 	editor = new Editor();
 
-	activeSimulation = new SimpleNBodySimulation(32768);
+	activeSimulation = new NBodySimulation(32768);;
 
 	renderer->SetParticleSimulation(activeSimulation);
 }
@@ -70,6 +71,7 @@ void Flux::Start()
 void Flux::Update(float deltaTime)
 {
 	Input::Update();
+
 	editor->Update(deltaTime);
 	activeSimulation->Update(deltaTime);
 

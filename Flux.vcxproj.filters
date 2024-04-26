@@ -105,6 +105,12 @@
     <ClCompile Include="Source\Framework\ParticleSimulations\SimpleNBodySimulation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Framework\ParticleSimulations\NBodySimulation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\RenderStages\NBodyComputeStage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Framework\Flux.h">
@@ -212,14 +218,21 @@
     <ClInclude Include="Headers\Framework\ParticleSimulations\SimpleNBodySimulation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Framework\ParticleSimulations\NBodySimulation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Graphics\RenderStages\NBodyComputeStage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Dependencies\Microsoft\d3dcompiler_47.dll" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Source\Shaders\SimpleNBody\screen.vertex.hlsl" />
-    <FxCompile Include="Source\Shaders\SimpleNBody\screen.pixel.hlsl" />
-    <FxCompile Include="Source\Shaders\SimpleNBody\screenClear.compute.hlsl" />
-    <FxCompile Include="Source\Shaders\SimpleNBody\simpleNBody.compute.hlsl" />
+    <FxCompile Include="Source\Shaders\NBody\screen.vertex.hlsl" />
+    <FxCompile Include="Source\Shaders\NBody\screen.pixel.hlsl" />
+    <FxCompile Include="Source\Shaders\NBody\screenClear.compute.hlsl" />
+    <FxCompile Include="Source\Shaders\NBody\simpleNBody.compute.hlsl" />
+    <FxCompile Include="Source\Shaders\NBody\NBody.compute.hlsl" />
   </ItemGroup>
 </Project>

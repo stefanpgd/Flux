@@ -8,7 +8,7 @@ struct SimpleNBodySettings;
 class ClearBufferStage : public RenderStage
 {
 public:
-	ClearBufferStage(Window* window, Texture* backBuffer, SimpleNBodySettings* settings);
+	ClearBufferStage(Window* window, Texture* backBuffer, float* trailStrength, float* trailCutoffOpacity);
 
 	void RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList) override;
 
@@ -17,6 +17,8 @@ private:
 
 private:
 	Texture* backBuffer;
-	SimpleNBodySettings* settings;
-	
+
+	// Editable settings //
+	float* trailStrength;
+	float* trailCutoffOpacity;
 };

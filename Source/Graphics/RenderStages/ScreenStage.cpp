@@ -60,8 +60,8 @@ void ScreenStage::CreateScreenMesh()
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	DXPipelineDescription description;
-	description.VertexPath = "Source/Shaders/SimpleNBody/screen.vertex.hlsl";
-	description.PixelPath = "Source/Shaders/SimpleNBody/screen.pixel.hlsl";
+	description.VertexPath = "Source/Shaders/NBody/screen.vertex.hlsl";
+	description.PixelPath = "Source/Shaders/NBody/screen.pixel.hlsl";
 	description.RootSignature = rootSignature;
 
 	pipeline = new DXPipeline(description);

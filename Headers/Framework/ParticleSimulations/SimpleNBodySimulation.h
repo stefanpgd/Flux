@@ -11,15 +11,16 @@ class ScreenStage;
 
 struct SimpleNBodySettings
 {
+	unsigned int particleCount;
 	float deltaTime = 0.016f;
 	float G = 1.0f;
-	float maxVelocity = 50.0f;
+	float maxVelocity = 100.0f;
 	float mouseMass = 5000.0f;
 	float positionX = 512;
 	float positionY = 512;
-	float trailStrength = 0.9f; // 0 - 1 // 
 
-	unsigned int particleCount;
+	float trailStrength = 0.9f;
+	float trailCutoffOpacity = 0.1f; 
 };
 
 // TODO: Depending if we end up having full Nbody, maybe rename or not 

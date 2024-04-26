@@ -1,5 +1,5 @@
-#include "Graphics/RenderStages/SimpleNBodyComputeStage.h"
-#include "Framework/ParticleSimulations/SimpleNBodySimulation.h"
+#include "Graphics/RenderStages/NBodyComputeStage.h"
+#include "Framework/ParticleSimulations/NBodySimulation.h"
 
 #include "Graphics/DXComputePipeline.h"
 #include "Graphics/DXStructuredBuffer.h"
@@ -13,14 +13,14 @@
 #include <glm.hpp>
 #include <imgui.h>
 
-SimpleNBodyComputeStage::SimpleNBodyComputeStage(Window* window, Texture* backBuffer, SimpleNBodySettings* settings)
+NBodyComputeStage::NBodyComputeStage(Window* window, Texture* backBuffer, NBodySettings* settings) 
 	: RenderStage(window), backBuffer(backBuffer), settings(settings)
 {
 	InitializeParticles();
 	CreatePipeline();
 }
 
-void SimpleNBodyComputeStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList)
+void NBodyComputeStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList)
 {
 	// 1. Bind root signature & pipeline state //
 	commandList->SetComputeRootSignature(rootSignature->GetAddress());
@@ -29,17 +29,17 @@ void SimpleNBodyComputeStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> com
 	// 2. Bind root arguments //
 	commandList->SetComputeRootDescriptorTable(0, backBuffer->GetUAV());
 	commandList->SetComputeRootDescriptorTable(1, particleBuffer->GetUAV());
-	commandList->SetComputeRoot32BitConstants(2, 7, settings, 0);
+	commandList->SetComputeRoot32BitConstants(2, 4, settings, 0);
 
 	// 3. Execute particle compute //
 	unsigned int dispatchSize = settings->particleCount / 64;
 	commandList->Dispatch(dispatchSize, 1, 1);
 }
 
-void SimpleNBodyComputeStage::InitializeParticles()
+void NBodyComputeStage::InitializeParticles()
 {
 	Particle* particles = new Particle[settings->particleCount];
-	for(int i = 0; i < settings->particleCount; i++)
+	for (int i = 0; i < settings->particleCount; i++)
 	{
 		float r = RandomInRange(5.0f, 500.0f);
 		float theta = RandomInRange(0.0f, 3.14159265 * 2.0);
@@ -59,7 +59,7 @@ void SimpleNBodyComputeStage::InitializeParticles()
 	particleBuffer = new DXStructuredBuffer(particles, settings->particleCount, sizeof(Particle));
 }
 
-void SimpleNBodyComputeStage::CreatePipeline()
+void NBodyComputeStage::CreatePipeline()
 {
 	CD3DX12_DESCRIPTOR_RANGE1 computeRange[1];
 	computeRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);
@@ -73,8 +73,8 @@ void SimpleNBodyComputeStage::CreatePipeline()
 	CD3DX12_ROOT_PARAMETER1 computeParameters[3];
 	computeParameters[0].InitAsDescriptorTable(1, &computeRange[0]);
 	computeParameters[1].InitAsDescriptorTable(1, &particleRange[0]);
-	computeParameters[2].InitAsConstants(7, 0, 0);
+	computeParameters[2].InitAsConstants(4, 0, 0);
 
 	rootSignature = new DXRootSignature(computeParameters, _countof(computeParameters), D3D12_ROOT_SIGNATURE_FLAG_NONE);
-	computePipeline = new DXComputePipeline(rootSignature, "Source/Shaders/NBody/simpleNBody.compute.hlsl");
+	computePipeline = new DXComputePipeline(rootSignature, "Source/Shaders/NBody/NBody.compute.hlsl");
 }

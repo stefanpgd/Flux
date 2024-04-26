@@ -18,13 +18,14 @@ float3 Palette(float t)
 
 float4 main(PixelIN IN) : SV_TARGET
 {
-    float sample = screenTexture.Sample(LinearSampler, IN.TexCoord).r;
+    float density = screenTexture.Sample(LinearSampler, IN.TexCoord).r;
+    float cutoffOpacity = screenTexture.Sample(LinearSampler, IN.TexCoord).g;
     
     float3 color = float3(0.0, 0.0, 0.0);
     
-    if(sample > 0.1)
+    if(density > cutoffOpacity)
     {
-        color = Palette(sample);
+        color = Palette(density);
     }
     
     return float4(color, 1.0f);

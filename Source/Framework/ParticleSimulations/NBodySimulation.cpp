@@ -1,4 +1,4 @@
-#include "Framework/ParticleSimulations/SimpleNBodySimulation.h"
+#include "Framework/ParticleSimulations/NBodySimulation.h"
 #include "Framework/Input.h"
 
 #include "Graphics/Texture.h"
@@ -6,13 +6,12 @@
 
 // Render Stages //
 #include "Graphics/RenderStages/ClearBufferStage.h"
-#include "Graphics/RenderStages/SimpleNBodyComputeStage.h"
+#include "Graphics/RenderStages/NBodyComputeStage.h"
 #include "Graphics/RenderStages/ScreenStage.h"
 
 #include <imgui.h>
 
-// TODO: Be able to pass different sizes instead of hard-coding it
-SimpleNBodySimulation::SimpleNBodySimulation(int particleCount) : ParticleSimulation(particleCount)
+NBodySimulation::NBodySimulation(int particleCount) : ParticleSimulation(particleCount)
 {
 	settings.particleCount = particleCount;
 
@@ -23,20 +22,18 @@ SimpleNBodySimulation::SimpleNBodySimulation(int particleCount) : ParticleSimula
 	renderBuffer = new Texture(textureBuffer, 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, sizeof(unsigned int));
 
 	clearBufferStage = new ClearBufferStage(window, renderBuffer, &settings.trailStrength, &settings.trailCutoffOpacity);
-	nBodyComputeStage = new SimpleNBodyComputeStage(window, renderBuffer, &settings);
+	nBodyComputeStage = new NBodyComputeStage(window, renderBuffer, &settings);
 	screenStage = new ScreenStage(window, renderBuffer);
 }
 
-void SimpleNBodySimulation::Update(float deltaTime)
+
+void NBodySimulation::Update(float deltaTime)
 {
 	settings.deltaTime = deltaTime;
-	settings.positionX = ImGui::GetIO().MousePos.x;
-	settings.positionY = ImGui::GetIO().MousePos.y;
 
 	// TODO: Simulation Speed ( deltaTime multiplier )
-	// TODO: Add cool presets for the settings
 
-	if(Input::GetKeyDown(KeyCode::F))
+	if (Input::GetKeyDown(KeyCode::F))
 	{
 		settings.G *= -1;
 	}
@@ -44,7 +41,6 @@ void SimpleNBodySimulation::Update(float deltaTime)
 	ImGui::Begin("Simplified N-Body Settings");
 	ImGui::DragFloat("G", &settings.G, 0.01f, 0.01f, 10.0f);
 	ImGui::DragFloat("Max Velocity", &settings.maxVelocity, 0.1f, 0.01f, 500.0f);
-	ImGui::DragFloat("Mouse Mass", &settings.mouseMass, 10.0f);
 	ImGui::DragFloat("Trail Strength", &settings.trailStrength, 0.001f, 0.0f, 1.0f);
 	ImGui::DragFloat("Trail Cutoff Opacity", &settings.trailCutoffOpacity, 0.001f, 0.0f, 1.0f);
 
@@ -55,7 +51,7 @@ void SimpleNBodySimulation::Update(float deltaTime)
 	ImGui::End();
 }
 
-void SimpleNBodySimulation::Render(ComPtr<ID3D12GraphicsCommandList2> commandList)
+void NBodySimulation::Render(ComPtr<ID3D12GraphicsCommandList2> commandList)
 {
 	// Execute rendering passes //
 	clearBufferStage->RecordStage(commandList);
