@@ -21,6 +21,8 @@ void Editor::Update(float deltaTime)
 		ImGui::Text(fps.c_str());
 		ImGui::Separator();
 
+		ImGui::Text("Press 'G' to switch Between Simple & Full N-Body simulations");
+
 		ImGui::EndMainMenuBar();
 	}
 }

@@ -19,6 +19,9 @@
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+NBodySimulation* nbodySimulation;
+SimpleNBodySimulation* simpleNBodySimulation;
+
 Flux::Flux()
 {
 	RegisterWindowClass();
@@ -26,7 +29,10 @@ Flux::Flux()
 	renderer = new Renderer(applicationName, 1024, 1024);
 	editor = new Editor();
 
-	activeSimulation = new NBodySimulation(32768);;
+	nbodySimulation = new NBodySimulation(32768);
+	simpleNBodySimulation = new SimpleNBodySimulation(32768);
+
+	activeSimulation = nbodySimulation;
 
 	renderer->SetParticleSimulation(activeSimulation);
 }
@@ -71,6 +77,22 @@ void Flux::Start()
 void Flux::Update(float deltaTime)
 {
 	Input::Update();
+
+	if (Input::GetKeyDown(KeyCode::G))
+	{
+		// TODO, probably do through some editor window soon-ish 
+		// when we've 3 or more simulations
+		if (activeSimulation == nbodySimulation)
+		{
+			activeSimulation = simpleNBodySimulation;
+		}
+		else
+		{
+			activeSimulation = nbodySimulation;
+		}
+
+		renderer->SetParticleSimulation(activeSimulation);
+	}
 
 	editor->Update(deltaTime);
 	activeSimulation->Update(deltaTime);
