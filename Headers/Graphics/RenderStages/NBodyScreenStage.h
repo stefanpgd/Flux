@@ -5,10 +5,10 @@
 class Mesh;
 class Texture;
 
-class ScreenStage : public RenderStage
+class NBodyScreenStage : public RenderStage
 {
 public:
-	ScreenStage(Window* window, Texture* backBuffer);
+	NBodyScreenStage(Window* window, Texture* backBuffer);
 
 	void RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList) override;
 

@@ -67,7 +67,13 @@ void Renderer::Render()
 	// 3. Record rendering stages for Particle Simulation //
 	activeSimulation->Render(commandList);
 
-	// 4. Execute List, Present and wait for the next frame to be ready //
+	// 4. ImGui/UI Draw Call //
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList.Get());
+
+	// 5. Prepare render target for presentation //
+	TransitionResource(window->GetCurrentScreenBuffer().Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+
+	// 6. Execute List, Present and wait for the next frame to be ready //
 	directCommands->ExecuteCommandList(backBufferIndex);
 	window->Present();
 	directCommands->WaitForFenceValue(window->GetCurrentBackBufferIndex());

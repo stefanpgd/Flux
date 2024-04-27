@@ -1,4 +1,4 @@
-#include "Graphics/RenderStages/ScreenStage.h"
+#include "Graphics/RenderStages/NBodyScreenStage.h"
 #include "Graphics/Mesh.h"
 #include "Graphics/DXPipeline.h"
 #include "Graphics/DXRootSignature.h"
@@ -8,7 +8,7 @@
 #include <imgui.h>
 #include <imgui_impl_dx12.h>
 
-ScreenStage::ScreenStage(Window* window, Texture* backBuffer) 
+NBodyScreenStage::NBodyScreenStage(Window* window, Texture* backBuffer)
 	: RenderStage(window), backBuffer(backBuffer)
 {
 	CreateScreenMesh();
@@ -17,7 +17,7 @@ ScreenStage::ScreenStage(Window* window, Texture* backBuffer)
 
 // Todo: Consider maybe directly accessing the backbuffers from the swap-chain
 // So the need for a graphics/rasterization pipeline might falter
-void ScreenStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList)
+void NBodyScreenStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList)
 {
 	// 0. Grab relevant resources for render call //
 	CD3DX12_CPU_DESCRIPTOR_HANDLE backBufferRTV = window->GetCurrentScreenRTV();
@@ -41,33 +41,9 @@ void ScreenStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList)
 
 	// 5. Draw screen quad //
 	commandList->DrawIndexedInstanced(screenMesh->GetIndicesCount(), 1, 0, 0, 0);
-
-	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList.Get());
-
-	// 6. Prepare render target for presentation //
-	TransitionResource(window->GetCurrentScreenBuffer().Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 }
 
-void ScreenStage::CreateScreenMesh()
-{
-	CD3DX12_DESCRIPTOR_RANGE1 screenRange[1];
-	screenRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // back buffer as Texture
-
-	CD3DX12_ROOT_PARAMETER1 screenRootParameters[1];
-	screenRootParameters[0].InitAsDescriptorTable(1, &screenRange[0], D3D12_SHADER_VISIBILITY_PIXEL);
-
-	rootSignature = new DXRootSignature(screenRootParameters, _countof(screenRootParameters),
-		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
-
-	DXPipelineDescription description;
-	description.VertexPath = "Source/Shaders/NBody/screen.vertex.hlsl";
-	description.PixelPath = "Source/Shaders/NBody/screen.pixel.hlsl";
-	description.RootSignature = rootSignature;
-
-	pipeline = new DXPipeline(description);
-}
-
-void ScreenStage::CreatePipeline()
+void NBodyScreenStage::CreateScreenMesh()
 {
 	Vertex* screenVertices = new Vertex[4];
 	screenVertices[0].Position = glm::vec3(-1.0f, -1.0f, 0.0f);
@@ -87,4 +63,23 @@ void ScreenStage::CreatePipeline()
 
 	delete[] screenVertices;
 	delete[] screenIndices;
+}
+
+void NBodyScreenStage::CreatePipeline()
+{
+	CD3DX12_DESCRIPTOR_RANGE1 screenRange[1];
+	screenRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // back buffer as Texture
+
+	CD3DX12_ROOT_PARAMETER1 screenRootParameters[1];
+	screenRootParameters[0].InitAsDescriptorTable(1, &screenRange[0], D3D12_SHADER_VISIBILITY_PIXEL);
+
+	rootSignature = new DXRootSignature(screenRootParameters, _countof(screenRootParameters),
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+	DXPipelineDescription description;
+	description.VertexPath = "Source/Shaders/NBody/screen.vertex.hlsl";
+	description.PixelPath = "Source/Shaders/NBody/screen.pixel.hlsl";
+	description.RootSignature = rootSignature;
+
+	pipeline = new DXPipeline(description);
 }

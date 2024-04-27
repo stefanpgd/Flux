@@ -53,7 +53,7 @@ void NBodyComputeStage::InitializeParticles()
 		particles[i].velocity[0] = velocity.x;
 		particles[i].velocity[1] = velocity.y;
 
-		particles[i].mass = RandomInRange(0.5f, 25.0f);
+		particles[i].mass = RandomInRange(0.5f, 165.0f);
 	}
 
 	particleBuffer = new DXStructuredBuffer(particles, settings->particleCount, sizeof(Particle));

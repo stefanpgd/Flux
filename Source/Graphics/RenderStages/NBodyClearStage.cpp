@@ -1,4 +1,4 @@
-#include "Graphics/RenderStages/ClearBufferStage.h"
+#include "Graphics/RenderStages/NBodyClearStage.h"
 #include "Graphics/DXRootSignature.h"
 #include "Graphics/DXComputePipeline.h"
 #include "Graphics/Window.h"
@@ -8,13 +8,13 @@
 
 #include <d3dx12.h>
 
-ClearBufferStage::ClearBufferStage(Window* window, Texture* backBuffer, float* trailStrength, float* trailCutoffOpacity)
+NBodyClearStage::NBodyClearStage(Window* window, Texture* backBuffer, float* trailStrength, float* trailCutoffOpacity)
 	: RenderStage(window), backBuffer(backBuffer), trailStrength(trailStrength), trailCutoffOpacity(trailCutoffOpacity)
 {
 	CreatePipeline();
 }
 
-void ClearBufferStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList)
+void NBodyClearStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList)
 {
 	// 1. Bind pipeline & root signature //
 	commandList->SetComputeRootSignature(rootSignature->GetAddress());
@@ -30,7 +30,7 @@ void ClearBufferStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandLis
 	commandList->Dispatch(threads, threads, 1);
 }
 
-void ClearBufferStage::CreatePipeline()
+void NBodyClearStage::CreatePipeline()
 {
 	CD3DX12_DESCRIPTOR_RANGE1 textureRange[1];
 	textureRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);

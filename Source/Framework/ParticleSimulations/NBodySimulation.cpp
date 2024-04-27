@@ -5,9 +5,9 @@
 #include "Graphics/DXAccess.h"
 
 // Render Stages //
-#include "Graphics/RenderStages/ClearBufferStage.h"
+#include "Graphics/RenderStages/NBodyClearStage.h"
 #include "Graphics/RenderStages/NBodyComputeStage.h"
-#include "Graphics/RenderStages/ScreenStage.h"
+#include "Graphics/RenderStages/NBodyScreenStage.h"
 
 #include <imgui.h>
 
@@ -21,9 +21,9 @@ NBodySimulation::NBodySimulation(int particleCount) : ParticleSimulation(particl
 	unsigned int* textureBuffer = new unsigned int[1024 * 1024];
 	renderBuffer = new Texture(textureBuffer, 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, sizeof(unsigned int));
 
-	clearBufferStage = new ClearBufferStage(window, renderBuffer, &settings.trailStrength, &settings.trailCutoffOpacity);
+	clearBufferStage = new NBodyClearStage(window, renderBuffer, &settings.trailStrength, &settings.trailCutoffOpacity);
 	nBodyComputeStage = new NBodyComputeStage(window, renderBuffer, &settings);
-	screenStage = new ScreenStage(window, renderBuffer);
+	screenStage = new NBodyScreenStage(window, renderBuffer);
 }
 
 
@@ -38,7 +38,7 @@ void NBodySimulation::Update(float deltaTime)
 		settings.G *= -1;
 	}
 
-	ImGui::Begin("Simplified N-Body Settings");
+	ImGui::Begin("N-Body Settings");
 	ImGui::DragFloat("G", &settings.G, 0.01f, 0.01f, 10.0f);
 	ImGui::DragFloat("Max Velocity", &settings.maxVelocity, 0.1f, 0.01f, 500.0f);
 	ImGui::DragFloat("Trail Strength", &settings.trailStrength, 0.001f, 0.0f, 1.0f);

@@ -5,16 +5,16 @@
 class Texture;
 class Window;
 
-class ClearBufferStage;
+class NBodyClearStage;
 class NBodyComputeStage;
-class ScreenStage;
+class NBodyScreenStage;
 
 struct NBodySettings
 {
 	unsigned int particleCount = 0;
 	float deltaTime = 0.016f;
 	float G = 1.0f;
-	float maxVelocity = 75.0f;
+	float maxVelocity = 125.0f;
 	
 	float trailStrength = 0.925f;
 	float trailCutoffOpacity = 0.1f;
@@ -32,9 +32,9 @@ private:
 	Texture* renderBuffer;
 
 	// Rendering Stages for this Simulation //
-	ClearBufferStage* clearBufferStage;
+	NBodyClearStage* clearBufferStage;
 	NBodyComputeStage* nBodyComputeStage;
-	ScreenStage* screenStage;
+	NBodyScreenStage* screenStage;
 
 	NBodySettings settings;
 };

@@ -5,9 +5,9 @@
 #include "Graphics/DXAccess.h"
 
 // Render Stages //
-#include "Graphics/RenderStages/ClearBufferStage.h"
+#include "Graphics/RenderStages/NBodyClearStage.h"
 #include "Graphics/RenderStages/SimpleNBodyComputeStage.h"
-#include "Graphics/RenderStages/ScreenStage.h"
+#include "Graphics/RenderStages/NBodyScreenStage.h"
 
 #include <imgui.h>
 
@@ -22,9 +22,9 @@ SimpleNBodySimulation::SimpleNBodySimulation(int particleCount) : ParticleSimula
 	unsigned int* textureBuffer = new unsigned int[1024 * 1024];
 	renderBuffer = new Texture(textureBuffer, 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, sizeof(unsigned int));
 
-	clearBufferStage = new ClearBufferStage(window, renderBuffer, &settings.trailStrength, &settings.trailCutoffOpacity);
+	clearBufferStage = new NBodyClearStage(window, renderBuffer, &settings.trailStrength, &settings.trailCutoffOpacity);
 	nBodyComputeStage = new SimpleNBodyComputeStage(window, renderBuffer, &settings);
-	screenStage = new ScreenStage(window, renderBuffer);
+	screenStage = new NBodyScreenStage(window, renderBuffer);
 }
 
 void SimpleNBodySimulation::Update(float deltaTime)

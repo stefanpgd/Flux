@@ -5,10 +5,10 @@
 class Texture;
 struct SimpleNBodySettings;
 
-class ClearBufferStage : public RenderStage
+class NBodyClearStage : public RenderStage
 {
 public:
-	ClearBufferStage(Window* window, Texture* backBuffer, float* trailStrength, float* trailCutoffOpacity);
+	NBodyClearStage(Window* window, Texture* backBuffer, float* trailStrength, float* trailCutoffOpacity);
 
 	void RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList) override;
 
