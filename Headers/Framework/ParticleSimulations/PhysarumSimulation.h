@@ -6,6 +6,7 @@ class Texture;
 class Window;
 
 class PhysarumScreenStage;
+class PhysarumComputeStage;
 
 struct PhysarumSettings
 {
@@ -27,6 +28,7 @@ private:
 
 	// Render stages //
 	PhysarumScreenStage* screenStage;
+	PhysarumComputeStage* agentStage;
 
 	PhysarumSettings settings;
 };

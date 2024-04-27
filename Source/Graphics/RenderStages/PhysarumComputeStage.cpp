@@ -1,26 +1,22 @@
-#include "Graphics/RenderStages/NBodyComputeStage.h"
-#include "Framework/ParticleSimulations/NBodySimulation.h"
+#include "Graphics/RenderStages/PhysarumComputeStage.h"
+#include "Framework/ParticleSimulations/PhysarumSimulation.h"
+#include "Framework/Mathematics.h"
 
-#include "Graphics/DXComputePipeline.h"
 #include "Graphics/DXStructuredBuffer.h"
 #include "Graphics/DXRootSignature.h"
+#include "Graphics/DXComputePipeline.h"
 #include "Graphics/Texture.h"
 
 #include "Utilities/Random.h"
-#include "Utilities/Logger.h"
-#include "Framework/Input.h"
 
-#include <glm.hpp>
-#include <imgui.h>
-
-NBodyComputeStage::NBodyComputeStage(Window* window, Texture* backBuffer, NBodySettings* settings) 
+PhysarumComputeStage::PhysarumComputeStage(Window* window, Texture* backBuffer, PhysarumSettings* settings)
 	: RenderStage(window), backBuffer(backBuffer), settings(settings)
 {
 	InitializeParticles();
 	CreatePipeline();
 }
 
-void NBodyComputeStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList)
+void PhysarumComputeStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList)
 {
 	// 1. Bind root signature & pipeline state //
 	commandList->SetComputeRootSignature(rootSignature->GetAddress());
@@ -28,38 +24,32 @@ void NBodyComputeStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandLi
 
 	// 2. Bind root arguments //
 	commandList->SetComputeRootDescriptorTable(0, backBuffer->GetUAV());
-	commandList->SetComputeRootDescriptorTable(1, particleBuffer->GetUAV());
-	commandList->SetComputeRoot32BitConstants(2, 4, settings, 0);
+	commandList->SetComputeRootDescriptorTable(1, agentBuffer->GetUAV());
+	commandList->SetComputeRoot32BitConstants(2, 2, settings, 0);
 
 	// 3. Execute particle compute //
 	unsigned int dispatchSize = settings->particleCount / 64;
 	commandList->Dispatch(dispatchSize, 1, 1);
 }
 
-void NBodyComputeStage::InitializeParticles()
+void PhysarumComputeStage::InitializeParticles()
 {
-	Particle* particles = new Particle[settings->particleCount];
-	for (int i = 0; i < settings->particleCount; i++)
+	Agent* agents = new Agent[settings->particleCount];
+	for(int i = 0; i < settings->particleCount; i++)
 	{
 		float r = RandomInRange(5.0f, 500.0f);
 		float theta = RandomInRange(0.0f, 3.14159265 * 2.0);
 
-		particles[i].position[0] = 512 + cosf(theta) * r;
-		particles[i].position[1] = 512 + sinf(theta) * r;
+		agents[i].position[0] = 512;
+		agents[i].position[1] = 512;
 
-		glm::vec2 velocity = glm::vec2(RandomInRange(-1.0f, 1.0f), RandomInRange(-1.0f, 1.0f));
-		velocity = glm::normalize(velocity);
-
-		particles[i].velocity[0] = velocity.x;
-		particles[i].velocity[1] = velocity.y;
-
-		particles[i].mass = RandomInRange(0.5f, 165.0f);
+		agents[i].angle = RandomInRange(0.0f, PI2);
 	}
 
-	particleBuffer = new DXStructuredBuffer(particles, settings->particleCount, sizeof(Particle));
+	agentBuffer = new DXStructuredBuffer(agents, settings->particleCount, sizeof(Agent));
 }
 
-void NBodyComputeStage::CreatePipeline()
+void PhysarumComputeStage::CreatePipeline()
 {
 	CD3DX12_DESCRIPTOR_RANGE1 backBufferRange[1];
 	backBufferRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);
@@ -73,8 +63,8 @@ void NBodyComputeStage::CreatePipeline()
 	CD3DX12_ROOT_PARAMETER1 computeParameters[3];
 	computeParameters[0].InitAsDescriptorTable(1, &backBufferRange[0]);
 	computeParameters[1].InitAsDescriptorTable(1, &particleRange[0]);
-	computeParameters[2].InitAsConstants(4, 0, 0);
+	computeParameters[2].InitAsConstants(2, 0, 0);
 
 	rootSignature = new DXRootSignature(computeParameters, _countof(computeParameters), D3D12_ROOT_SIGNATURE_FLAG_NONE);
-	computePipeline = new DXComputePipeline(rootSignature, "Source/Shaders/NBody/NBody.compute.hlsl");
+	computePipeline = new DXComputePipeline(rootSignature, "Source/Shaders/Physarum/PhysarumAgents.compute.hlsl");
 }
