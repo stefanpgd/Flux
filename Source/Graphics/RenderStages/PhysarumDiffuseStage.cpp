@@ -20,8 +20,10 @@ void PhysarumDiffuseStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> comman
 
 	// 2. Bind relevant root arguments //
 	commandList->SetComputeRootDescriptorTable(0, backBuffer->GetUAV());
-	commandList->SetComputeRoot32BitConstants(1, 3, &settings->deltaTime, 0);
+	commandList->SetComputeRoot32BitConstants(1, 1, &settings->deltaTime, 0);
+	commandList->SetComputeRoot32BitConstants(1, 2, &settings->trailDissolveSpeed, 1);
 
+	// 3. Execute compute pipeline //
 	commandList->Dispatch(window->GetWindowWidth(), window->GetWindowHeight(), 1);
 }
 

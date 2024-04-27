@@ -11,12 +11,15 @@ struct SimulationSettings
     uint particleCount;
     float deltaTime;
     
-    // TODO: Add    'Speed'            for agents
-    // TODO: Add    'Turn Speed'       for agents
+    float agentSpeed;
+    float agentTurnSpeed;
     
-    // TODO: Add    'Sensor Angle'     for agents
-    // TODO: Add    'Sensor Distance'  for agents
-    // TODO: Add    'Sensor Size'      for agents
+    float agentSensorAngle;
+    float agentSensorDistance;
+    int agentSensorSize;
+    
+    float3 agentColor;
+    float agentStrengthPerFrame;
 };
 ConstantBuffer<SimulationSettings> settings : register(b0);
 
@@ -47,9 +50,6 @@ float Random(uint seed)
 // Senses the trailmap with a given size & location //
 float SenseTrail(Agent agent, float angleOffset)
 {
-    const float sensorDistance = 2.5;
-    const int sensorSize = 1;
-    
     // TODO: Again make width & height part of the settings...
     int width;
     int height;
@@ -57,12 +57,12 @@ float SenseTrail(Agent agent, float angleOffset)
     
     float angle = agent.angle + angleOffset;
     float2 sensorDir = float2(cos(angle), sin(angle));
-    int2 sensorCenter = agent.position + sensorDir * sensorDistance;
+    int2 sensorCenter = agent.position + sensorDir * settings.agentSensorDistance;
     
     float summedTrail = 0.0f;
-    for(int x = -sensorSize; x <= sensorSize; x++)
+    for(int x = -settings.agentSensorSize; x <= settings.agentSensorSize; x++)
     {
-        for(int y = -sensorSize; y <= sensorSize; y++)
+        for(int y = -settings.agentSensorSize; y <= settings.agentSensorSize; y++)
         {
             int2 coord = sensorCenter + int2(x, y);
 
@@ -71,7 +71,8 @@ float SenseTrail(Agent agent, float angleOffset)
                 continue;
             }
             
-            summedTrail += backBuffer[coord].r;
+            float3 sample = backBuffer[coord].rgb;
+            summedTrail += sample.r + sample.b + sample.g; // since you can change color here
         }
     }
 
@@ -97,7 +98,7 @@ void main(ComputeShaderInput IN)
     Agent agent = agents[ID];
     float2 direction = float2(cos(agent.angle), sin(agent.angle));
     
-    const float speed = 80.0f * settings.deltaTime;
+    float speed = settings.agentSpeed * settings.deltaTime;
     agent.position += direction * speed;
     
     if(agent.position.x > width || agent.position.x < 0.0 ||
@@ -113,15 +114,11 @@ void main(ComputeShaderInput IN)
     
     agents[ID].position = agent.position;
     
-    // Steering //
-    const float angleOffset = 0.2;
-    
     // Steering 'weights' based on the intensity of the 'sensed' trailmap
     float forward = SenseTrail(agent, 0.0f);
-    float left = SenseTrail(agent, angleOffset);
-    float right = SenseTrail(agent, -angleOffset);
+    float left = SenseTrail(agent, settings.agentSensorAngle);
+    float right = SenseTrail(agent, -settings.agentSensorAngle);
     
-    const float turnSpeed = 26.0;
     float rand = Random(agent.position.y * width + agent.position.x);
     
     // If forward is the strongest
@@ -131,16 +128,18 @@ void main(ComputeShaderInput IN)
     }
     else if(forward < left && forward < right) // if no forward, then make random decisions
     {
-        agents[ID].angle += (rand - 0.5) * 2.0 * turnSpeed * settings.deltaTime;
+        agents[ID].angle += (rand - 0.5) * 2.0 * settings.agentTurnSpeed * settings.deltaTime;
     }
     else if(right > left) // Right is strongest
     {
-        agents[ID].angle -= rand * turnSpeed * settings.deltaTime;
+        agents[ID].angle -= rand * settings.agentTurnSpeed * settings.deltaTime;
     }
     else if(left > right) // Left is strongest
     {
-        agents[ID].angle += rand * turnSpeed * settings.deltaTime;
+        agents[ID].angle += rand * settings.agentTurnSpeed * settings.deltaTime;
     }
     
-    backBuffer[uint2(agent.position)] = float4(1.0, 1.0, 1.0, 1.0);
+    // TODO: Maybe consider moving this to the screen stages...?
+    float4 outputColor = float4(settings.agentColor, 1.0) * settings.agentStrengthPerFrame;
+    backBuffer[uint2(agent.position)] = outputColor;
 }

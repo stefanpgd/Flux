@@ -9,6 +9,7 @@ struct ComputeShaderInput
 struct Settings
 {
     float deltaTime;
+    
     float trailDissolveSpeed;
     float trailDiffuseSpeed;
 };

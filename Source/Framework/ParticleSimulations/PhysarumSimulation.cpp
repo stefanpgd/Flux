@@ -7,6 +7,8 @@
 #include "Graphics/RenderStages/PhysarumComputeStage.h"
 #include "Graphics/RenderStages/PhysarumScreenStage.h"
 
+#include <imgui.h>
+
 PhysarumSimulation::PhysarumSimulation(unsigned int particleCount) : ParticleSimulation(particleCount)
 {
 	settings.particleCount = particleCount;
@@ -31,6 +33,31 @@ PhysarumSimulation::PhysarumSimulation(unsigned int particleCount) : ParticleSim
 void PhysarumSimulation::Update(float deltaTime)
 {
 	settings.deltaTime = deltaTime;
+
+	ImGui::Begin("Physarum Simulation Settings");
+	
+	ImGui::Text("Settings related to the agent Movement Speed");
+	ImGui::DragFloat("Agent Speed", &settings.agentSpeed, 0.5f, 0.0f, 250.0f);
+	ImGui::DragFloat("Agent Turn Speed", &settings.agentTurnSpeed, 0.2f, 0.0f, 150.0f);
+	ImGui::Separator();
+
+	ImGui::Text("Settings related to the Trail 'Sensing'");
+	ImGui::DragFloat("Sensor Angle", &settings.agentSensorAngle, 0.01f, 0.01f, 3.14159265);
+	ImGui::DragFloat("Sensor Distance", &settings.agentSensorDistance, 0.01f, 0.01f, 50.0f);
+	ImGui::SliderInt("Sensor Size", &settings.agentSensorSize, 1, 3);
+	ImGui::Separator();
+
+	ImGui::Text("Settings related to the Trail");
+	ImGui::DragFloat("Trail Dissolve Speed", &settings.trailDissolveSpeed, 0.01f, 0.33f, 10.0f);
+	ImGui::DragFloat("Trail Diffuse Speed", &settings.trailDiffuseSpeed, 0.05f, 0.33f, 50.0f);
+
+	ImGui::ColorPicker3("Trail Color", &settings.agentColor[0]);
+	ImGui::DragFloat("Trail Strength Per Frame", &settings.agentStrengthPerFrame, 0.001f, 0.0f, 1.0f);
+
+	ImGui::Separator();
+	ImGui::Text("Particle Count: %i", settings.particleCount);
+
+	ImGui::End();
 }
 
 void PhysarumSimulation::Render(ComPtr<ID3D12GraphicsCommandList2> commandList)
