@@ -14,7 +14,8 @@ struct PhysarumSettings
 	unsigned int particleCount;
 	float deltaTime = 1.0f;
 
-	float trailDissolveSpeed = 0.35f;
+	float trailDissolveSpeed = 0.53f;
+	float trailDiffuseSpeed = 12.5f;
 };
 
 class PhysarumSimulation : public ParticleSimulation

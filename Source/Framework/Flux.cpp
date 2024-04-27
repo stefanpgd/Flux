@@ -23,6 +23,8 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 NBodySimulation* nbodySimulation;
 SimpleNBodySimulation* simpleNBodySimulation;
 
+// TODO: Re-add resizing, which includes resizing simulations
+
 Flux::Flux()
 {
 	RegisterWindowClass();
@@ -32,7 +34,7 @@ Flux::Flux()
 
 	nbodySimulation = new NBodySimulation(32768);
 	simpleNBodySimulation = new SimpleNBodySimulation(63488);
-	activeSimulation = new PhysarumSimulation(256);
+	activeSimulation = new PhysarumSimulation(32768);
 
 	renderer->SetParticleSimulation(activeSimulation);
 }

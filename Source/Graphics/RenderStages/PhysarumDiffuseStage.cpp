@@ -20,7 +20,7 @@ void PhysarumDiffuseStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> comman
 
 	// 2. Bind relevant root arguments //
 	commandList->SetComputeRootDescriptorTable(0, backBuffer->GetUAV());
-	commandList->SetComputeRoot32BitConstants(1, 2, &settings->deltaTime, 0);
+	commandList->SetComputeRoot32BitConstants(1, 3, &settings->deltaTime, 0);
 
 	commandList->Dispatch(window->GetWindowWidth(), window->GetWindowHeight(), 1);
 }
@@ -32,7 +32,7 @@ void PhysarumDiffuseStage::CreatePipeline()
 
 	CD3DX12_ROOT_PARAMETER1 computeParameters[2];
 	computeParameters[0].InitAsDescriptorTable(1, &backBufferRange[0]);
-	computeParameters[1].InitAsConstants(2, 0, 0);
+	computeParameters[1].InitAsConstants(3, 0, 0);
 
 	rootSignature = new DXRootSignature(computeParameters, _countof(computeParameters), D3D12_ROOT_SIGNATURE_FLAG_NONE);
 	computePipeline = new DXComputePipeline(rootSignature, "Source/Shaders/Physarum/PhysarumDiffuse.compute.hlsl");

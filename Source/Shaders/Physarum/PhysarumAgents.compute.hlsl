@@ -10,6 +10,13 @@ struct SimulationSettings
 {
     uint particleCount;
     float deltaTime;
+    
+    // TODO: Add    'Speed'            for agents
+    // TODO: Add    'Turn Speed'       for agents
+    
+    // TODO: Add    'Sensor Angle'     for agents
+    // TODO: Add    'Sensor Distance'  for agents
+    // TODO: Add    'Sensor Size'      for agents
 };
 ConstantBuffer<SimulationSettings> settings : register(b0);
 
@@ -37,6 +44,40 @@ float Random(uint seed)
     return float(seed) / 4294967295.0; // 2^32-1
 }
 
+// Senses the trailmap with a given size & location //
+float SenseTrail(Agent agent, float angleOffset)
+{
+    const float sensorDistance = 2.5;
+    const int sensorSize = 1;
+    
+    // TODO: Again make width & height part of the settings...
+    int width;
+    int height;
+    backBuffer.GetDimensions(width, height);
+    
+    float angle = agent.angle + angleOffset;
+    float2 sensorDir = float2(cos(angle), sin(angle));
+    int2 sensorCenter = agent.position + sensorDir * sensorDistance;
+    
+    float summedTrail = 0.0f;
+    for(int x = -sensorSize; x <= sensorSize; x++)
+    {
+        for(int y = -sensorSize; y <= sensorSize; y++)
+        {
+            int2 coord = sensorCenter + int2(x, y);
+
+            if(coord.x < 0 || coord.x > int(width) || coord.y < 0 || coord.y > int(height))
+            {
+                continue;
+            }
+            
+            summedTrail += backBuffer[coord].r;
+        }
+    }
+
+    return summedTrail;
+}
+
 [numthreads(64, 1, 1)]
 void main(ComputeShaderInput IN)
 {
@@ -56,7 +97,7 @@ void main(ComputeShaderInput IN)
     Agent agent = agents[ID];
     float2 direction = float2(cos(agent.angle), sin(agent.angle));
     
-    const float speed = 50.0f * settings.deltaTime;
+    const float speed = 80.0f * settings.deltaTime;
     agent.position += direction * speed;
     
     if(agent.position.x > width || agent.position.x < 0.0 ||
@@ -70,6 +111,36 @@ void main(ComputeShaderInput IN)
         agent.angle = Random(seed) * PI * 2.0;
     }
     
-    agents[ID] = agent;
+    agents[ID].position = agent.position;
+    
+    // Steering //
+    const float angleOffset = 0.2;
+    
+    // Steering 'weights' based on the intensity of the 'sensed' trailmap
+    float forward = SenseTrail(agent, 0.0f);
+    float left = SenseTrail(agent, angleOffset);
+    float right = SenseTrail(agent, -angleOffset);
+    
+    const float turnSpeed = 26.0;
+    float rand = Random(agent.position.y * width + agent.position.x);
+    
+    // If forward is the strongest
+    if(forward > left && forward > right)
+    {
+        agents[ID].angle = agent.angle;
+    }
+    else if(forward < left && forward < right) // if no forward, then make random decisions
+    {
+        agents[ID].angle += (rand - 0.5) * 2.0 * turnSpeed * settings.deltaTime;
+    }
+    else if(right > left) // Right is strongest
+    {
+        agents[ID].angle -= rand * turnSpeed * settings.deltaTime;
+    }
+    else if(left > right) // Left is strongest
+    {
+        agents[ID].angle += rand * turnSpeed * settings.deltaTime;
+    }
+    
     backBuffer[uint2(agent.position)] = float4(1.0, 1.0, 1.0, 1.0);
 }
