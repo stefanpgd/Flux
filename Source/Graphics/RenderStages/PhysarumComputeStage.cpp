@@ -54,15 +54,15 @@ void PhysarumComputeStage::CreatePipeline()
 	CD3DX12_DESCRIPTOR_RANGE1 backBufferRange[1];
 	backBufferRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);
 
-	CD3DX12_DESCRIPTOR_RANGE1 particleRange[1];
-	particleRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 1, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);
+	CD3DX12_DESCRIPTOR_RANGE1 agentRange[1];
+	agentRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 1, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);
 
 	CD3DX12_DESCRIPTOR_RANGE1 settingsRange[1];
 	settingsRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 2, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);
 
 	CD3DX12_ROOT_PARAMETER1 computeParameters[3];
 	computeParameters[0].InitAsDescriptorTable(1, &backBufferRange[0]);
-	computeParameters[1].InitAsDescriptorTable(1, &particleRange[0]);
+	computeParameters[1].InitAsDescriptorTable(1, &agentRange[0]);
 	computeParameters[2].InitAsConstants(2, 0, 0);
 
 	rootSignature = new DXRootSignature(computeParameters, _countof(computeParameters), D3D12_ROOT_SIGNATURE_FLAG_NONE);

@@ -3,8 +3,9 @@
 #include "Graphics/Texture.h"
 #include "Graphics/DXAccess.h"
 
-#include "Graphics/RenderStages/PhysarumScreenStage.h"
+#include "Graphics/RenderStages/PhysarumDiffuseStage.h"
 #include "Graphics/RenderStages/PhysarumComputeStage.h"
+#include "Graphics/RenderStages/PhysarumScreenStage.h"
 
 PhysarumSimulation::PhysarumSimulation(unsigned int particleCount) : ParticleSimulation(particleCount)
 {
@@ -22,8 +23,9 @@ PhysarumSimulation::PhysarumSimulation(unsigned int particleCount) : ParticleSim
 	// into the base class consutrctor is probably the way to go
 	Window* window = DXAccess::GetWindow();
 
-	screenStage = new PhysarumScreenStage(window, renderBuffer);
 	agentStage = new PhysarumComputeStage(window, renderBuffer, &settings);
+	diffuseStage = new PhysarumDiffuseStage(window, renderBuffer, &settings);
+	screenStage = new PhysarumScreenStage(window, renderBuffer);
 }
 
 void PhysarumSimulation::Update(float deltaTime)
@@ -34,5 +36,6 @@ void PhysarumSimulation::Update(float deltaTime)
 void PhysarumSimulation::Render(ComPtr<ID3D12GraphicsCommandList2> commandList)
 {
 	agentStage->RecordStage(commandList);
+	diffuseStage->RecordStage(commandList);
 	screenStage->RecordStage(commandList);
 }

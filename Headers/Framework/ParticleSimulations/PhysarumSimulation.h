@@ -5,13 +5,16 @@
 class Texture;
 class Window;
 
-class PhysarumScreenStage;
 class PhysarumComputeStage;
+class PhysarumDiffuseStage;
+class PhysarumScreenStage;
 
 struct PhysarumSettings
 {
 	unsigned int particleCount;
 	float deltaTime = 1.0f;
+
+	float trailDissolveSpeed = 0.35f;
 };
 
 class PhysarumSimulation : public ParticleSimulation
@@ -27,8 +30,9 @@ private:
 	Texture* renderBuffer;
 
 	// Render stages //
-	PhysarumScreenStage* screenStage;
 	PhysarumComputeStage* agentStage;
+	PhysarumDiffuseStage* diffuseStage;
+	PhysarumScreenStage* screenStage;
 
 	PhysarumSettings settings;
 };
