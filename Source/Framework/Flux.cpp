@@ -31,7 +31,7 @@ Flux::Flux()
 	editor = new Editor();
 
 	nbodySimulation = new NBodySimulation(32768);
-	simpleNBodySimulation = new SimpleNBodySimulation(32768);
+	simpleNBodySimulation = new SimpleNBodySimulation(63488);
 
 	activeSimulation = new PhysarumSimulation(10);
 
