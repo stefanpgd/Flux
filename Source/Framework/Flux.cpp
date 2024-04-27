@@ -16,6 +16,7 @@
 
 #include "Framework/ParticleSimulations/SimpleNBodySimulation.h"
 #include "Framework/ParticleSimulations/NBodySimulation.h"
+#include "Framework/ParticleSimulations/PhysarumSimulation.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -32,7 +33,7 @@ Flux::Flux()
 	nbodySimulation = new NBodySimulation(32768);
 	simpleNBodySimulation = new SimpleNBodySimulation(32768);
 
-	activeSimulation = nbodySimulation;
+	activeSimulation = new PhysarumSimulation(10);
 
 	renderer->SetParticleSimulation(activeSimulation);
 }
