@@ -51,11 +51,11 @@ void PhysarumSimulation::Update(float deltaTime)
 	ImGui::DragFloat("Trail Dissolve Speed", &settings.trailDissolveSpeed, 0.01f, 0.33f, 10.0f);
 	ImGui::DragFloat("Trail Diffuse Speed", &settings.trailDiffuseSpeed, 0.05f, 0.33f, 50.0f);
 
-	ImGui::ColorPicker3("Trail Color", &settings.agentColor[0]);
-	ImGui::DragFloat("Trail Strength Per Frame", &settings.agentStrengthPerFrame, 0.001f, 0.0f, 1.0f);
-
 	ImGui::Separator();
 	ImGui::Text("Particle Count: %i", settings.particleCount);
+
+	ImGui::Text("Adjusting the 'Sensor Distance' will result\ninto large or small cell-like structures.", settings.particleCount);
+
 
 	ImGui::End();
 }

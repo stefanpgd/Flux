@@ -34,7 +34,7 @@ Flux::Flux()
 
 	nbodySimulation = new NBodySimulation(32768);
 	simpleNBodySimulation = new SimpleNBodySimulation(63488);
-	activeSimulation = new PhysarumSimulation(1000000);
+	activeSimulation = new PhysarumSimulation(2000000);
 
 	renderer->SetParticleSimulation(activeSimulation);
 }

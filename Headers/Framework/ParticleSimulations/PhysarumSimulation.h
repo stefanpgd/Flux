@@ -14,15 +14,12 @@ struct PhysarumSettings
 	unsigned int particleCount;
 	float deltaTime = 1.0f;
 
-	float agentSpeed = 15.0f;
-	float agentTurnSpeed = 25.0;
+	float agentSpeed = 125.0f;
+	float agentTurnSpeed = 72.0f;
 
 	float agentSensorAngle = 0.2;
-	float agentSensorDistance = 2.5;
+	float agentSensorDistance = 12.0;
 	int agentSensorSize = 1;
-
-	float agentColor[3] = { 1.0f, 1.0f, 1.0f };
-	float agentStrengthPerFrame = 1.0f;
 
 	float trailDissolveSpeed = 0.53f;
 	float trailDiffuseSpeed = 12.5f;

@@ -17,9 +17,6 @@ struct SimulationSettings
     float agentSensorAngle;
     float agentSensorDistance;
     int agentSensorSize;
-    
-    float3 agentColor;
-    float agentStrengthPerFrame;
 };
 ConstantBuffer<SimulationSettings> settings : register(b0);
 
@@ -66,6 +63,7 @@ float SenseTrail(Agent agent, float angleOffset)
         {
             int2 coord = sensorCenter + int2(x, y);
 
+            // TODO: Test the difference between 'stay in bounds' and 'move to other side'
             if(coord.x < 0 || coord.x > int(width) || coord.y < 0 || coord.y > int(height))
             {
                 continue;
@@ -139,7 +137,5 @@ void main(ComputeShaderInput IN)
         agents[ID].angle += rand * settings.agentTurnSpeed * settings.deltaTime;
     }
     
-    // TODO: Maybe consider moving this to the screen stages...?
-    float4 outputColor = float4(settings.agentColor, 1.0) * settings.agentStrengthPerFrame;
-    backBuffer[uint2(agent.position)] = outputColor;
+    backBuffer[uint2(agent.position)] = float4(1.0, 1.0, 1.0, 1.0);
 }

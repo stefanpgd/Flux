@@ -26,7 +26,6 @@ void PhysarumComputeStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> comman
 	commandList->SetComputeRootDescriptorTable(0, backBuffer->GetUAV());
 	commandList->SetComputeRootDescriptorTable(1, agentBuffer->GetUAV());
 	commandList->SetComputeRoot32BitConstants(2, 7, settings, 0);
-	commandList->SetComputeRoot32BitConstants(2, 4, &settings->agentColor, 8); // stub due to packing rules
 
 	// 3. Execute particle compute //
 	unsigned int dispatchSize = settings->particleCount / 64;
@@ -42,8 +41,8 @@ void PhysarumComputeStage::InitializeParticles()
 		float r = RandomInRange(5.0f, 50.0f);
 		float theta = RandomInRange(0.0f, 3.14159265 * 2.0);
 
-		agents[i].position[0] = 512 + cosf(theta) * r;
-		agents[i].position[1] = 512 + sinf(theta) * r;
+		agents[i].position[0] = 512;
+		agents[i].position[1] = 512;
 
 		agents[i].angle = r;
 	}
@@ -65,7 +64,7 @@ void PhysarumComputeStage::CreatePipeline()
 	CD3DX12_ROOT_PARAMETER1 computeParameters[3];
 	computeParameters[0].InitAsDescriptorTable(1, &backBufferRange[0]);
 	computeParameters[1].InitAsDescriptorTable(1, &agentRange[0]);
-	computeParameters[2].InitAsConstants(12, 0, 0);
+	computeParameters[2].InitAsConstants(7, 0, 0);
 
 	rootSignature = new DXRootSignature(computeParameters, _countof(computeParameters), D3D12_ROOT_SIGNATURE_FLAG_NONE);
 	computePipeline = new DXComputePipeline(rootSignature, "Source/Shaders/Physarum/PhysarumAgents.compute.hlsl");
