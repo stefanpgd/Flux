@@ -8,8 +8,8 @@
 
 #include <d3dx12.h>
 
-NBodyClearStage::NBodyClearStage(Window* window, Texture* backBuffer, float* trailStrength, float* trailCutoffOpacity)
-	: RenderStage(window), backBuffer(backBuffer), trailStrength(trailStrength), trailCutoffOpacity(trailCutoffOpacity)
+NBodyClearStage::NBodyClearStage(Texture* backBuffer, float* trailStrength, float* trailCutoffOpacity)
+	: backBuffer(backBuffer), trailStrength(trailStrength), trailCutoffOpacity(trailCutoffOpacity)
 {
 	CreatePipeline();
 }

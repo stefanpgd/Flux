@@ -6,8 +6,8 @@
 #include "Graphics/Texture.h"
 #include "Graphics/Window.h"
 
-PhysarumDiffuseStage::PhysarumDiffuseStage(Window* window, Texture* backBuffer, PhysarumSettings* settings)
-	: RenderStage(window), backBuffer(backBuffer), settings(settings)
+PhysarumDiffuseStage::PhysarumDiffuseStage(Texture* backBuffer, PhysarumSettings* settings) 
+	: backBuffer(backBuffer), settings(settings)
 {
 	CreatePipeline();
 }

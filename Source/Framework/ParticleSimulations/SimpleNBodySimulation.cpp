@@ -22,9 +22,9 @@ SimpleNBodySimulation::SimpleNBodySimulation(int particleCount) : ParticleSimula
 	unsigned int* textureBuffer = new unsigned int[1024 * 1024];
 	renderBuffer = new Texture(textureBuffer, 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, sizeof(unsigned int));
 
-	clearBufferStage = new NBodyClearStage(window, renderBuffer, &settings.trailStrength, &settings.trailCutoffOpacity);
-	nBodyComputeStage = new SimpleNBodyComputeStage(window, renderBuffer, &settings);
-	screenStage = new ScreenStage("Source/Shaders/NBody/screen.pixel.hlsl", window, renderBuffer);
+	clearBufferStage = new NBodyClearStage(renderBuffer, &settings.trailStrength, &settings.trailCutoffOpacity);
+	nBodyComputeStage = new SimpleNBodyComputeStage(renderBuffer, &settings);
+	screenStage = new ScreenStage("Source/Shaders/NBody/screen.pixel.hlsl", renderBuffer);
 }
 
 void SimpleNBodySimulation::Update(float deltaTime)

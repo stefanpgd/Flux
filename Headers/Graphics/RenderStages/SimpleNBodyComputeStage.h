@@ -16,7 +16,7 @@ struct Particle
 class SimpleNBodyComputeStage : public RenderStage
 {
 public:
-	SimpleNBodyComputeStage(Window* window, Texture* backBuffer, SimpleNBodySettings* settings);
+	SimpleNBodyComputeStage(Texture* backBuffer, SimpleNBodySettings* settings);
 
 	void RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList) override;
 

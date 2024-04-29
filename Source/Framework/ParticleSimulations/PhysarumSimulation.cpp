@@ -25,9 +25,9 @@ PhysarumSimulation::PhysarumSimulation(unsigned int particleCount) : ParticleSim
 	// into the base class consutrctor is probably the way to go
 	Window* window = DXAccess::GetWindow();
 
-	agentStage = new PhysarumComputeStage(window, renderBuffer, &settings);
-	diffuseStage = new PhysarumDiffuseStage(window, renderBuffer, &settings);
-	screenStage = new ScreenStage("Source/Shaders/Physarum/screen.pixel.hlsl", window, renderBuffer);
+	agentStage = new PhysarumComputeStage(renderBuffer, &settings);
+	diffuseStage = new PhysarumDiffuseStage(renderBuffer, &settings);
+	screenStage = new ScreenStage("Source/Shaders/Physarum/screen.pixel.hlsl", renderBuffer);
 }
 
 void PhysarumSimulation::Update(float deltaTime)

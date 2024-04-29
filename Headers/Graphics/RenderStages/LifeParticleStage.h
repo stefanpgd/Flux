@@ -16,7 +16,7 @@ struct Particle
 class LifeParticleStage : public RenderStage
 {
 public:
-	LifeParticleStage(Window* window, Texture* backBuffer, LifeSettings* settings);
+	LifeParticleStage(Texture* backBuffer, LifeSettings* settings);
 
 	void RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList) override;
 

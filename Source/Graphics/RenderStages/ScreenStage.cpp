@@ -6,8 +6,8 @@
 #include "Graphics/DXRootSignature.h"
 #include "Graphics/DXUtilities.h"
 
-ScreenStage::ScreenStage(const std::string& pixelShaderPath, Window* window, Texture* backBuffer)
-	: RenderStage(window), backBuffer(backBuffer)
+ScreenStage::ScreenStage(const std::string& pixelShaderPath, Texture* backBuffer)
+	: backBuffer(backBuffer)
 {
 	CreateScreenMesh();
 	CreatePipeline(pixelShaderPath);

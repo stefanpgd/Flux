@@ -4,7 +4,7 @@
 #include "Graphics/Window.h"
 #include "Graphics/Texture.h"
 
-ClearScreenStage::ClearScreenStage(Window* window, Texture* targetTexture) : RenderStage(window), targetTexture(targetTexture)
+ClearScreenStage::ClearScreenStage(Texture* targetTexture) : targetTexture(targetTexture)
 {
 	CreatePipeline();
 }

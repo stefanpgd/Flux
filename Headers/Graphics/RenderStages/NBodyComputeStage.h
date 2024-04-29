@@ -22,7 +22,7 @@ struct Particle
 class NBodyComputeStage : public RenderStage
 {
 public:
-	NBodyComputeStage(Window* window, Texture* backBuffer, NBodySettings* settings);
+	NBodyComputeStage(Texture* backBuffer, NBodySettings* settings);
 
 	void RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList) override;
 

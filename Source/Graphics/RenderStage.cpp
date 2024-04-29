@@ -1,3 +1,7 @@
 #include "Graphics/RenderStage.h"
+#include "Graphics/DXAccess.h"
 
-RenderStage::RenderStage(Window* window) : window(window) { }
+RenderStage::RenderStage()
+{ 
+	window = DXAccess::GetWindow();
+}

@@ -7,7 +7,7 @@ class Texture;
 class ClearScreenStage : public RenderStage
 {
 public:
-	ClearScreenStage(Window* window, Texture* targetTexture);
+	ClearScreenStage(Texture* targetTexture);
 
 	void RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList) override;
 

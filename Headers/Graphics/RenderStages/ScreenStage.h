@@ -10,7 +10,7 @@ class Texture;
 class ScreenStage : public RenderStage
 {
 public:
-	ScreenStage(const std::string& pixelShaderPath, Window* window, Texture* backBuffer);
+	ScreenStage(const std::string& pixelShaderPath, Texture* backBuffer);
 
 	void RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList) override;
 

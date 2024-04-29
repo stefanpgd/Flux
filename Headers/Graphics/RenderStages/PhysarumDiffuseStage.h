@@ -8,7 +8,7 @@ struct PhysarumSettings;
 class PhysarumDiffuseStage : public RenderStage
 {
 public:
-	PhysarumDiffuseStage(Window* window, Texture* backBuffer, PhysarumSettings* settings);
+	PhysarumDiffuseStage(Texture* backBuffer, PhysarumSettings* settings);
 
 	void RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList) override;
 

@@ -21,9 +21,9 @@ LifeSimulation::LifeSimulation(unsigned int particleCount)
 
 	renderBuffer = new Texture(textureBuffer, 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, sizeof(unsigned int));
 
-	clearScreenStage = new ClearScreenStage(DXAccess::GetWindow(), renderBuffer);
-	screenStage = new ScreenStage("Source/Shaders/Life/screen.pixel.hlsl", DXAccess::GetWindow(), renderBuffer);
-	particleStage = new LifeParticleStage(DXAccess::GetWindow(), renderBuffer, &settings);
+	clearScreenStage = new ClearScreenStage(renderBuffer);
+	screenStage = new ScreenStage("Source/Shaders/Life/screen.pixel.hlsl", renderBuffer);
+	particleStage = new LifeParticleStage(renderBuffer, &settings);
 }
 
 void LifeSimulation::Update(float deltaTime)

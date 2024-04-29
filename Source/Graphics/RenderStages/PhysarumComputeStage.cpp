@@ -9,8 +9,8 @@
 
 #include "Utilities/Random.h"
 
-PhysarumComputeStage::PhysarumComputeStage(Window* window, Texture* backBuffer, PhysarumSettings* settings)
-	: RenderStage(window), backBuffer(backBuffer), settings(settings)
+PhysarumComputeStage::PhysarumComputeStage(Texture* backBuffer, PhysarumSettings* settings)
+	: backBuffer(backBuffer), settings(settings)
 {
 	InitializeParticles();
 	CreatePipeline();

@@ -19,7 +19,7 @@ class DXComputePipeline;
 class RenderStage
 {
 public:
-	RenderStage(Window* window);
+	RenderStage();
 
 	virtual void RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList) = 0;
 

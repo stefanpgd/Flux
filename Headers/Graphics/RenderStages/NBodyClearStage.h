@@ -8,7 +8,7 @@ struct SimpleNBodySettings;
 class NBodyClearStage : public RenderStage
 {
 public:
-	NBodyClearStage(Window* window, Texture* backBuffer, float* trailStrength, float* trailCutoffOpacity);
+	NBodyClearStage(Texture* backBuffer, float* trailStrength, float* trailCutoffOpacity);
 
 	void RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList) override;
 

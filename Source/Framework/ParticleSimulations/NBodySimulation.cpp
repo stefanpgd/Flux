@@ -21,9 +21,9 @@ NBodySimulation::NBodySimulation(int particleCount) : ParticleSimulation(particl
 	unsigned int* textureBuffer = new unsigned int[1024 * 1024];
 	renderBuffer = new Texture(textureBuffer, 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, sizeof(unsigned int));
 
-	clearBufferStage = new NBodyClearStage(window, renderBuffer, &settings.trailStrength, &settings.trailCutoffOpacity);
-	nBodyComputeStage = new NBodyComputeStage(window, renderBuffer, &settings);
-	screenStage = new ScreenStage("Source/Shaders/NBody/screen.pixel.hlsl", window, renderBuffer);
+	clearBufferStage = new NBodyClearStage(renderBuffer, &settings.trailStrength, &settings.trailCutoffOpacity);
+	nBodyComputeStage = new NBodyComputeStage(renderBuffer, &settings);
+	screenStage = new ScreenStage("Source/Shaders/NBody/screen.pixel.hlsl", renderBuffer);
 }
 
 void NBodySimulation::Update(float deltaTime)

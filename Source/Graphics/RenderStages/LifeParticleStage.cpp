@@ -9,8 +9,8 @@
 #include "Utilities/Random.h"
 #include "Framework/Mathematics.h"
 
-LifeParticleStage::LifeParticleStage(Window* window, Texture* backBuffer, LifeSettings* settings)
-	: RenderStage(window), backBuffer(backBuffer), settings(settings)
+LifeParticleStage::LifeParticleStage(Texture* backBuffer, LifeSettings* settings)
+	: backBuffer(backBuffer), settings(settings)
 {
 	InitializeParticles();
 	CreatePipeline();

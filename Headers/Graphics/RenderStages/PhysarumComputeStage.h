@@ -16,7 +16,7 @@ struct Agent
 class PhysarumComputeStage : public RenderStage
 {
 public:
-	PhysarumComputeStage(Window* window, Texture* backBuffer, PhysarumSettings* settings);
+	PhysarumComputeStage(Texture* backBuffer, PhysarumSettings* settings);
 
 	void RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList) override;
 

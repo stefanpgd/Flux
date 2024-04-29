@@ -13,8 +13,8 @@
 #include <glm.hpp>
 #include <imgui.h>
 
-NBodyComputeStage::NBodyComputeStage(Window* window, Texture* backBuffer, NBodySettings* settings) 
-	: RenderStage(window), backBuffer(backBuffer), settings(settings)
+NBodyComputeStage::NBodyComputeStage(Texture* backBuffer, NBodySettings* settings) 
+	: backBuffer(backBuffer), settings(settings)
 {
 	InitializeParticles();
 	CreatePipeline();
