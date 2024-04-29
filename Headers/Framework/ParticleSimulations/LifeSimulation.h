@@ -11,6 +11,7 @@ class ScreenStage;
 struct LifeSettings
 {
 	unsigned int particleCount;
+	float deltaTime = 1.0f;
 };
 
 class LifeSimulation : public ParticleSimulation

@@ -25,7 +25,7 @@ void LifeParticleStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandLi
 	// 2. Bind root arguments //
 	commandList->SetComputeRootDescriptorTable(0, backBuffer->GetUAV());
 	commandList->SetComputeRootDescriptorTable(1, particleBuffer->GetUAV());
-	commandList->SetComputeRoot32BitConstants(2, 1, settings, 0);
+	commandList->SetComputeRoot32BitConstants(2, 2, settings, 0);
 
 	// 3. Execute particle compute //
 	unsigned int dispatchSize = settings->particleCount / 64;
@@ -49,7 +49,14 @@ void LifeParticleStage::InitializeParticles()
 		particles[i].velocity[0] = velocity.x;
 		particles[i].velocity[1] = velocity.y;
 
-		particles[i].color = rand() % 2;
+		float roll = Random01();
+
+		particles[i].color = 0;
+
+		if(roll > 0.1)
+		{
+			particles[i].color = 1;
+		}
 	}
 
 	particleBuffer = new DXStructuredBuffer(particles, settings->particleCount, sizeof(Particle));
@@ -69,7 +76,7 @@ void LifeParticleStage::CreatePipeline()
 	CD3DX12_ROOT_PARAMETER1 computeParameters[3];
 	computeParameters[0].InitAsDescriptorTable(1, &backBufferRange[0]);
 	computeParameters[1].InitAsDescriptorTable(1, &particleRange[0]);
-	computeParameters[2].InitAsConstants(1, 0, 0);
+	computeParameters[2].InitAsConstants(2, 0, 0);
 
 	rootSignature = new DXRootSignature(computeParameters, _countof(computeParameters), D3D12_ROOT_SIGNATURE_FLAG_NONE);
 	computePipeline = new DXComputePipeline(rootSignature, "Source/Shaders/Life/lifeParticle.compute.hlsl");

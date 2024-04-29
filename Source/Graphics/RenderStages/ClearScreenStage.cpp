@@ -19,8 +19,7 @@ void ClearScreenStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandLis
 	commandList->SetComputeRootDescriptorTable(0, targetTexture->GetUAV());
 
 	// 3. Clear (back buffer) texture // 
-	int threads = window->GetWindowWidth() / 64;
-	commandList->Dispatch(threads, threads, 1);
+	commandList->Dispatch(window->GetWindowWidth(), window->GetWindowHeight(), 1);
 }
 
 void ClearScreenStage::CreatePipeline()

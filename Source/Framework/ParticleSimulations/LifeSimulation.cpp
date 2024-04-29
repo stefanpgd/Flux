@@ -28,6 +28,7 @@ LifeSimulation::LifeSimulation(unsigned int particleCount)
 
 void LifeSimulation::Update(float deltaTime)
 {
+	settings.deltaTime = deltaTime;
 }
 
 void LifeSimulation::Render(ComPtr<ID3D12GraphicsCommandList2> commandList)
