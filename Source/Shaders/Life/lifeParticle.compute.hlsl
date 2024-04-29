@@ -10,6 +10,11 @@ struct SimulationSettings
 {
     uint particleCount;
     float deltaTime;
+    
+    float maxDistance;
+    float friction;
+    
+    float attractionMatrix[2][2];
 };
 ConstantBuffer<SimulationSettings> settings : register(b0);
 
@@ -25,8 +30,8 @@ RWStructuredBuffer<Particle> particles : register(u1);
 
 static float3 cellColors[2] =
 {
-    float3(1.0, 0.0, 0.0),
-    float3(0.0, 1.0, 0.0)
+    float3(1.0, 0.05, 0.05),
+    float3(0.5, 0.5, 1.0)
 };
 
 float2 CheckBounds(float2 position)
@@ -85,13 +90,6 @@ void main(ComputeShaderInput IN)
         return;
     }
     
-    const float maxDistance = 15.0f;
-    float AM[2][2];
-    AM[0][0] = 0.8;    // Red's attraction to Red
-    AM[0][1] = -0.6;    // Red's attraction to Green
-    AM[1][0] = 0.9;    // Green's attraction to Red
-    AM[1][1] = 0.05;    // Green's attraction to Green
-    
     Particle p = particles[ID];
     
     float2 acceleration = float2(0.0f, 0.0f);
@@ -107,26 +105,25 @@ void main(ComputeShaderInput IN)
         float2 BA = p2.position - p.position;
         float distance = length(BA);
         
-        if(distance > maxDistance)
+        if(distance > settings.maxDistance)
         {
             continue;
         }
         
-        float attraction = AM[p.color][p2.color];
-        float normalizedDistance = distance / maxDistance;
+        float attraction = settings.attractionMatrix[p.color][p2.color];
+        float normalizedDistance = distance / settings.maxDistance;
         
         if(isnan(normalizedDistance))
         {
             continue;
         }
         
-        float force = AttractionForce(normalizedDistance, attraction) * maxDistance;
+        float force = AttractionForce(normalizedDistance, attraction) * settings.maxDistance;
         acceleration += normalize(BA) * force;
     }
     
     // TODO: Add simulation speed again
-    const float friction = 2.5f;
-    p.velocity = lerp(p.velocity, p.velocity * 0.5, friction * settings.deltaTime);
+    p.velocity = lerp(p.velocity, p.velocity * 0.5, settings.friction * settings.deltaTime);
     
     p.velocity += acceleration * settings.deltaTime;
     p.position += p.velocity * settings.deltaTime;
@@ -135,5 +132,17 @@ void main(ComputeShaderInput IN)
     
     particles[ID] = p;
     
-    backBuffer[uint2(p.position)] = float4(cellColors[p.color], 1.0);
+    backBuffer[uint2(p.position)] += float4(cellColors[p.color], 1.0);
+    
+    const float sideColorStrength = 0.75f;
+    const float cornerColorStrength = 0.25f;
+    backBuffer[uint2(p.position) + uint2(1, 0)] += float4(cellColors[p.color] * sideColorStrength, 1.0);
+    backBuffer[uint2(p.position) + uint2(-1, 0)] += float4(cellColors[p.color] * sideColorStrength, 1.0);
+    backBuffer[uint2(p.position) + uint2(0, 1)] += float4(cellColors[p.color] * sideColorStrength, 1.0);
+    backBuffer[uint2(p.position) + uint2(0, -1)] += float4(cellColors[p.color] * sideColorStrength, 1.0);
+    
+    backBuffer[uint2(p.position) + uint2(1, 1)] += float4(cellColors[p.color] * cornerColorStrength, 1.0);
+    backBuffer[uint2(p.position) + uint2(1, -1)] += float4(cellColors[p.color] * cornerColorStrength, 1.0);
+    backBuffer[uint2(p.position) + uint2(-1, 1)] += float4(cellColors[p.color] * cornerColorStrength, 1.0);
+    backBuffer[uint2(p.position) + uint2(-1, -1)] += float4(cellColors[p.color] * cornerColorStrength, 1.0);
 }

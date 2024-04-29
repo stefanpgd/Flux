@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Framework/ParticleSimulation.h"
+#include <glm.hpp>
 
 class Texture;
 
@@ -12,6 +13,11 @@ struct LifeSettings
 {
 	unsigned int particleCount;
 	float deltaTime = 1.0f;
+
+	float maxDistance = 10.0f;
+	float friction = 2.5f;
+
+	glm::vec4 attractionMatrix[2][2];
 };
 
 class LifeSimulation : public ParticleSimulation

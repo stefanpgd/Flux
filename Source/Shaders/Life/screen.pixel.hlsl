@@ -26,9 +26,10 @@ float4 main(PixelIN IN) : SV_TARGET
             sum += screenTexture.Sample(LinearSampler, float2(coordX, coordY)).rgb;
         }
     }
-    sum /= 6.0;
+    sum /= 9.0;
     sum = clamp(sum, float3(0.0f, 0.0f, 0.0f), float3(1.0f, 1.0f, 1.0f));
     
     float3 color = screenTexture.Sample(LinearSampler, IN.TexCoord).rgb;
+    color = clamp(color, float3(0.0f, 0.0f, 0.0f), float3(1.0f, 1.0f, 1.0f));
     return float4(sum, 1.0f);
 }
