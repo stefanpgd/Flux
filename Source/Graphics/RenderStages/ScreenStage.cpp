@@ -1,23 +1,21 @@
-#include "Graphics/RenderStages/NBodyScreenStage.h"
+#include "Graphics/RenderStages/ScreenStage.h"
+
 #include "Graphics/Mesh.h"
+#include "Graphics/Texture.h"
 #include "Graphics/DXPipeline.h"
 #include "Graphics/DXRootSignature.h"
-#include "Graphics/Texture.h"
 #include "Graphics/DXUtilities.h"
 
-#include <imgui.h>
-#include <imgui_impl_dx12.h>
-
-NBodyScreenStage::NBodyScreenStage(Window* window, Texture* backBuffer)
+ScreenStage::ScreenStage(const std::string& pixelShaderPath, Window* window, Texture* backBuffer)
 	: RenderStage(window), backBuffer(backBuffer)
 {
 	CreateScreenMesh();
-	CreatePipeline();
+	CreatePipeline(pixelShaderPath);
 }
 
 // Todo: Consider maybe directly accessing the backbuffers from the swap-chain
 // So the need for a graphics/rasterization pipeline might falter
-void NBodyScreenStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList)
+void ScreenStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList)
 {
 	// 0. Grab relevant resources for render call //
 	CD3DX12_CPU_DESCRIPTOR_HANDLE backBufferRTV = window->GetCurrentScreenRTV();
@@ -43,7 +41,7 @@ void NBodyScreenStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandLis
 	commandList->DrawIndexedInstanced(screenMesh->GetIndicesCount(), 1, 0, 0, 0);
 }
 
-void NBodyScreenStage::CreateScreenMesh()
+void ScreenStage::CreateScreenMesh()
 {
 	Vertex* screenVertices = new Vertex[4];
 	screenVertices[0].Position = glm::vec3(-1.0f, -1.0f, 0.0f);
@@ -65,7 +63,7 @@ void NBodyScreenStage::CreateScreenMesh()
 	delete[] screenIndices;
 }
 
-void NBodyScreenStage::CreatePipeline()
+void ScreenStage::CreatePipeline(const std::string& pixelShaderPath)
 {
 	CD3DX12_DESCRIPTOR_RANGE1 screenRange[1];
 	screenRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // back buffer as Texture
@@ -78,7 +76,7 @@ void NBodyScreenStage::CreatePipeline()
 
 	DXPipelineDescription description;
 	description.VertexPath = "Source/Shaders/NBody/screen.vertex.hlsl";
-	description.PixelPath = "Source/Shaders/NBody/screen.pixel.hlsl";
+	description.PixelPath = pixelShaderPath;
 	description.RootSignature = rootSignature;
 
 	pipeline = new DXPipeline(description);

@@ -3,11 +3,10 @@
 #include "Framework/ParticleSimulation.h"
 
 class Texture;
-class Window;
 
 class PhysarumComputeStage;
 class PhysarumDiffuseStage;
-class PhysarumScreenStage;
+class ScreenStage;
 
 struct PhysarumSettings
 {
@@ -40,7 +39,7 @@ private:
 	// Render stages //
 	PhysarumComputeStage* agentStage;
 	PhysarumDiffuseStage* diffuseStage;
-	PhysarumScreenStage* screenStage;
+	ScreenStage* screenStage;
 
 	PhysarumSettings settings;
 };

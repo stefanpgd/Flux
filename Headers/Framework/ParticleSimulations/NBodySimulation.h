@@ -7,7 +7,7 @@ class Window;
 
 class NBodyClearStage;
 class NBodyComputeStage;
-class NBodyScreenStage;
+class ScreenStage;
 
 struct NBodySettings
 {
@@ -34,7 +34,7 @@ private:
 	// Rendering Stages for this Simulation //
 	NBodyClearStage* clearBufferStage;
 	NBodyComputeStage* nBodyComputeStage;
-	NBodyScreenStage* screenStage;
+	ScreenStage* screenStage;
 
 	NBodySettings settings;
 };

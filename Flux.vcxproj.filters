@@ -108,19 +108,19 @@
     <ClCompile Include="Source\Graphics\RenderStages\PhysarumComputeStage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\RenderStages\PhysarumScreenStage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Framework\ParticleSimulations\PhysarumSimulation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Graphics\RenderStages\NBodyScreenStage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\RenderStages\NBodyClearStage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\RenderStages\PhysarumDiffuseStage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Framework\ParticleSimulations\LifeSimulation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\RenderStages\ScreenStage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -233,19 +233,19 @@
     <ClInclude Include="Headers\Graphics\RenderStages\NBodyClearStage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Graphics\RenderStages\NBodyScreenStage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Framework\ParticleSimulations\PhysarumSimulation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Graphics\RenderStages\PhysarumScreenStage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Graphics\RenderStages\PhysarumComputeStage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Graphics\RenderStages\PhysarumDiffuseStage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Framework\ParticleSimulations\LifeSimulation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Graphics\RenderStages\ScreenStage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

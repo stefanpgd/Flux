@@ -5,7 +5,7 @@
 
 #include "Graphics/RenderStages/PhysarumDiffuseStage.h"
 #include "Graphics/RenderStages/PhysarumComputeStage.h"
-#include "Graphics/RenderStages/PhysarumScreenStage.h"
+#include "Graphics/RenderStages/ScreenStage.h"
 
 #include <imgui.h>
 
@@ -27,7 +27,7 @@ PhysarumSimulation::PhysarumSimulation(unsigned int particleCount) : ParticleSim
 
 	agentStage = new PhysarumComputeStage(window, renderBuffer, &settings);
 	diffuseStage = new PhysarumDiffuseStage(window, renderBuffer, &settings);
-	screenStage = new PhysarumScreenStage(window, renderBuffer);
+	screenStage = new ScreenStage("Source/Shaders/Physarum/screen.pixel.hlsl", window, renderBuffer);
 }
 
 void PhysarumSimulation::Update(float deltaTime)

@@ -139,9 +139,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Graphics\RenderStages\ScreenStage.cpp" />
+    <ClCompile Include="Source\Framework\ParticleSimulations\LifeSimulation.cpp" />
     <ClCompile Include="Source\Graphics\RenderStages\PhysarumDiffuseStage.cpp" />
     <ClCompile Include="Source\Graphics\RenderStages\PhysarumComputeStage.cpp" />
-    <ClCompile Include="Source\Graphics\RenderStages\PhysarumScreenStage.cpp" />
     <ClCompile Include="Source\Framework\ParticleSimulations\PhysarumSimulation.cpp" />
     <ClCompile Include="Source\Graphics\RenderStages\NBodyComputeStage.cpp" />
     <ClCompile Include="Source\Framework\ParticleSimulations\NBodySimulation.cpp" />
@@ -149,7 +150,6 @@
     <ClCompile Include="Source\Framework\ParticleSimulation.cpp" />
     <ClCompile Include="Source\Framework\Input.cpp" />
     <ClCompile Include="Source\Framework\Editor.cpp" />
-    <ClCompile Include="Source\Graphics\RenderStages\NBodyScreenStage.cpp" />
     <ClCompile Include="Source\Graphics\RenderStages\SimpleNBodyComputeStage.cpp" />
     <ClCompile Include="Source\Graphics\RenderStages\NBodyClearStage.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui.cpp" />
@@ -208,16 +208,16 @@
     <ClInclude Include="Headers\Utilities\Logger.h" />
     <ClInclude Include="Headers\Graphics\RenderStage.h" />
     <ClInclude Include="Headers\Graphics\RenderStages\SimpleNBodyComputeStage.h" />
-    <ClInclude Include="Headers\Graphics\RenderStages\NBodyScreenStage.h" />
     <ClInclude Include="Headers\Framework\Input.h" />
     <ClInclude Include="Headers\Framework\ParticleSimulation.h" />
     <ClInclude Include="Headers\Framework\ParticleSimulations\SimpleNBodySimulation.h" />
     <ClInclude Include="Headers\Framework\ParticleSimulations\NBodySimulation.h" />
     <ClInclude Include="Headers\Graphics\RenderStages\NBodyComputeStage.h" />
     <ClInclude Include="Headers\Framework\ParticleSimulations\PhysarumSimulation.h" />
-    <ClInclude Include="Headers\Graphics\RenderStages\PhysarumScreenStage.h" />
     <ClInclude Include="Headers\Graphics\RenderStages\PhysarumComputeStage.h" />
     <ClInclude Include="Headers\Graphics\RenderStages\PhysarumDiffuseStage.h" />
+    <ClInclude Include="Headers\Framework\ParticleSimulations\LifeSimulation.h" />
+    <ClInclude Include="Headers\Graphics\RenderStages\ScreenStage.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Dependencies\Microsoft\d3dcompiler_47.dll">

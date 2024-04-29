@@ -7,7 +7,7 @@
 // Render Stages //
 #include "Graphics/RenderStages/NBodyClearStage.h"
 #include "Graphics/RenderStages/SimpleNBodyComputeStage.h"
-#include "Graphics/RenderStages/NBodyScreenStage.h"
+#include "Graphics/RenderStages/ScreenStage.h"
 
 #include <imgui.h>
 
@@ -24,7 +24,7 @@ SimpleNBodySimulation::SimpleNBodySimulation(int particleCount) : ParticleSimula
 
 	clearBufferStage = new NBodyClearStage(window, renderBuffer, &settings.trailStrength, &settings.trailCutoffOpacity);
 	nBodyComputeStage = new SimpleNBodyComputeStage(window, renderBuffer, &settings);
-	screenStage = new NBodyScreenStage(window, renderBuffer);
+	screenStage = new ScreenStage("Source/Shaders/NBody/screen.pixel.hlsl", window, renderBuffer);
 }
 
 void SimpleNBodySimulation::Update(float deltaTime)
