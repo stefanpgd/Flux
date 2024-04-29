@@ -30,8 +30,6 @@ void NBodySimulation::Update(float deltaTime)
 {
 	settings.deltaTime = deltaTime;
 
-	// TODO: Simulation Speed ( deltaTime multiplier )
-
 	if (Input::GetKeyDown(KeyCode::F))
 	{
 		settings.G *= -1;
@@ -40,6 +38,8 @@ void NBodySimulation::Update(float deltaTime)
 	ImGui::Begin("N-Body Settings");
 	ImGui::DragFloat("G", &settings.G, 0.01f, 0.01f, 10.0f);
 	ImGui::DragFloat("Max Velocity", &settings.maxVelocity, 0.1f, 0.01f, 500.0f);
+	ImGui::DragFloat("Simulation Speed", &settings.simulationSpeed, 0.001f, 0.00f, 1.0f);
+
 	ImGui::DragFloat("Trail Strength", &settings.trailStrength, 0.001f, 0.0f, 1.0f);
 	ImGui::DragFloat("Trail Cutoff Opacity", &settings.trailCutoffOpacity, 0.001f, 0.0f, 1.0f);
 

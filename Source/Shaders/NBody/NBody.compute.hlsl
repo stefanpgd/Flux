@@ -19,6 +19,7 @@ struct SimulationSettings
     float deltaTime;
     float G;
     float maxVelocity;
+	float simulationSpeed;
 };
 ConstantBuffer<SimulationSettings> settings : register(b0);
 
@@ -91,7 +92,7 @@ void main(ComputeShaderInput IN)
         acceleration += force * (1.0 / p.mass);
     }
     
-    p.velocity += acceleration * settings.deltaTime;
+    p.velocity += acceleration * (settings.deltaTime * settings.simulationSpeed);
     
     float vLength = length(p.velocity);
     
@@ -100,7 +101,7 @@ void main(ComputeShaderInput IN)
         p.velocity = normalize(p.velocity) * maxVelocity;
     }
     
-    p.position += p.velocity * settings.deltaTime;
+    p.position += p.velocity * (settings.deltaTime * settings.simulationSpeed);
     p.position = CheckBounds(p.position);
     
     particles[IN.DispatchThreadID.x] = p;

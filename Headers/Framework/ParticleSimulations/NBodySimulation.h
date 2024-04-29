@@ -15,6 +15,7 @@ struct NBodySettings
 	float deltaTime = 0.016f;
 	float G = 1.0f;
 	float maxVelocity = 125.0f;
+	float simulationSpeed = 1.0f;
 	
 	float trailStrength = 0.925f;
 	float trailCutoffOpacity = 0.1f;

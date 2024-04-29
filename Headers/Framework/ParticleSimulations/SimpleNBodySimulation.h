@@ -18,6 +18,7 @@ struct SimpleNBodySettings
 	float mouseMass = 5000.0f;
 	float positionX = 512;
 	float positionY = 512;
+	float simulationSpeed = 1.0f;
 
 	float trailStrength = 0.9f;
 	float trailCutoffOpacity = 0.1f; 

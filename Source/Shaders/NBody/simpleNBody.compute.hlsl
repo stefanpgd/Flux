@@ -22,6 +22,7 @@ struct SimulationSettings
     float mouseMass;
     float positionX;
     float positionY;
+    float simulationSpeed;
 };
 ConstantBuffer<SimulationSettings> settings : register(b0);
 
@@ -86,14 +87,14 @@ void main(ComputeShaderInput IN)
     float2 force = normalize(dir) * forceStrength;
     acceleration += force * (1.0 / p.mass);
     
-    p.velocity += acceleration * settings.deltaTime;
+    p.velocity += acceleration * (settings.deltaTime * settings.simulationSpeed);
     
     if (length(p.velocity) >= maxVelocity)
     {
         p.velocity = normalize(p.velocity) * maxVelocity;
     }
     
-    p.position += p.velocity * settings.deltaTime;
+    p.position += p.velocity * (settings.deltaTime * settings.simulationSpeed);
     p.position = CheckBounds(p.position);
     
     particles[IN.DispatchThreadID.x] = p;

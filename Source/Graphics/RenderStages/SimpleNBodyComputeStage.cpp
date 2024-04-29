@@ -29,7 +29,7 @@ void SimpleNBodyComputeStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> com
 	// 2. Bind root arguments //
 	commandList->SetComputeRootDescriptorTable(0, backBuffer->GetUAV());
 	commandList->SetComputeRootDescriptorTable(1, particleBuffer->GetUAV());
-	commandList->SetComputeRoot32BitConstants(2, 7, settings, 0);
+	commandList->SetComputeRoot32BitConstants(2, 8, settings, 0);
 
 	// 3. Execute particle compute //
 	unsigned int dispatchSize = settings->particleCount / 64;
@@ -73,7 +73,7 @@ void SimpleNBodyComputeStage::CreatePipeline()
 	CD3DX12_ROOT_PARAMETER1 computeParameters[3];
 	computeParameters[0].InitAsDescriptorTable(1, &computeRange[0]);
 	computeParameters[1].InitAsDescriptorTable(1, &particleRange[0]);
-	computeParameters[2].InitAsConstants(7, 0, 0);
+	computeParameters[2].InitAsConstants(8, 0, 0);
 
 	rootSignature = new DXRootSignature(computeParameters, _countof(computeParameters), D3D12_ROOT_SIGNATURE_FLAG_NONE);
 	computePipeline = new DXComputePipeline(rootSignature, "Source/Shaders/NBody/simpleNBody.compute.hlsl");

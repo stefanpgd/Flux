@@ -33,7 +33,6 @@ void SimpleNBodySimulation::Update(float deltaTime)
 	settings.positionX = ImGui::GetIO().MousePos.x;
 	settings.positionY = ImGui::GetIO().MousePos.y;
 
-	// TODO: Simulation Speed ( deltaTime multiplier )
 	// TODO: Add cool presets for the settings
 
 	if(Input::GetKeyDown(KeyCode::F))
@@ -45,6 +44,8 @@ void SimpleNBodySimulation::Update(float deltaTime)
 	ImGui::DragFloat("G", &settings.G, 0.01f, 0.01f, 10.0f);
 	ImGui::DragFloat("Max Velocity", &settings.maxVelocity, 0.1f, 0.01f, 500.0f);
 	ImGui::DragFloat("Mouse Mass", &settings.mouseMass, 10.0f);
+	ImGui::DragFloat("Simulation Speed", &settings.simulationSpeed, 0.001f, 0.00f, 1.0f);
+
 	ImGui::DragFloat("Trail Strength", &settings.trailStrength, 0.001f, 0.0f, 1.0f);
 	ImGui::DragFloat("Trail Cutoff Opacity", &settings.trailCutoffOpacity, 0.001f, 0.0f, 1.0f);
 
