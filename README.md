@@ -12,7 +12,7 @@
 # "Flux" 
 
 
-1. **noun** - _Continious change_
+1. **noun** - _Continuous change_
 2. **noun** - _A flowing movement of something such as particles/matter_
 
 </td>
