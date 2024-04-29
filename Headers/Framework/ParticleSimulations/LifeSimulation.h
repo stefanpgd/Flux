@@ -4,7 +4,11 @@
 
 class Texture;
 
-struct LifeSimulationSettings
+class ClearScreenStage;
+class LifeParticleStage;
+class ScreenStage;
+
+struct LifeSettings
 {
 	unsigned int particleCount;
 };
@@ -21,5 +25,9 @@ private:
 	// Output Buffer //
 	Texture* renderBuffer;
 
-	LifeSimulationSettings settings;
+	ClearScreenStage* clearScreenStage;
+	LifeParticleStage* particleStage;
+	ScreenStage* screenStage;
+
+	LifeSettings settings;
 };

@@ -17,11 +17,13 @@
 #include "Framework/ParticleSimulations/SimpleNBodySimulation.h"
 #include "Framework/ParticleSimulations/NBodySimulation.h"
 #include "Framework/ParticleSimulations/PhysarumSimulation.h"
+#include "Framework/ParticleSimulations/LifeSimulation.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 NBodySimulation* nbodySimulation;
 SimpleNBodySimulation* simpleNBodySimulation;
+PhysarumSimulation* physarumSimulation;
 
 // TODO: Re-add resizing, which includes resizing simulations
 
@@ -34,7 +36,9 @@ Flux::Flux()
 
 	nbodySimulation = new NBodySimulation(32768);
 	simpleNBodySimulation = new SimpleNBodySimulation(63488);
-	activeSimulation = new PhysarumSimulation(2000000);
+	physarumSimulation = new PhysarumSimulation(2000000);
+
+	activeSimulation = new LifeSimulation(256);
 
 	renderer->SetParticleSimulation(activeSimulation);
 }

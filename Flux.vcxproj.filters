@@ -123,6 +123,12 @@
     <ClCompile Include="Source\Graphics\RenderStages\ScreenStage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Graphics\RenderStages\LifeParticleStage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\RenderStages\ClearScreenStage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Framework\Flux.h">
@@ -248,19 +254,27 @@
     <ClInclude Include="Headers\Graphics\RenderStages\ScreenStage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Graphics\RenderStages\LifeParticleStage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Graphics\RenderStages\ClearScreenStage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Dependencies\Microsoft\d3dcompiler_47.dll" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Source\Shaders\NBody\screen.vertex.hlsl" />
+    <FxCompile Include="Source\Shaders\screen.vertex.hlsl" />
     <FxCompile Include="Source\Shaders\NBody\screen.pixel.hlsl" />
     <FxCompile Include="Source\Shaders\NBody\screenClear.compute.hlsl" />
     <FxCompile Include="Source\Shaders\NBody\simpleNBody.compute.hlsl" />
     <FxCompile Include="Source\Shaders\NBody\NBody.compute.hlsl" />
     <FxCompile Include="Source\Shaders\Physarum\PhysarumAgents.compute.hlsl" />
     <FxCompile Include="Source\Shaders\Physarum\screen.pixel.hlsl" />
-    <FxCompile Include="Source\Shaders\Physarum\screen.vertex.hlsl" />
     <FxCompile Include="Source\Shaders\Physarum\PhysarumDiffuse.compute.hlsl" />
+    <FxCompile Include="Source\Shaders\Life\screen.pixel.hlsl" />
+    <FxCompile Include="Source\Shaders\Life\lifeParticle.compute.hlsl" />
+    <FxCompile Include="Source\Shaders\clearScreen.compute.hlsl" />
   </ItemGroup>
 </Project>

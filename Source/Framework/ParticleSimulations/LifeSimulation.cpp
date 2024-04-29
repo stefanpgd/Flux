@@ -4,6 +4,10 @@
 #include "Graphics/Texture.h"
 #include "Graphics/DXAccess.h"
 
+#include "Graphics/RenderStages/ClearScreenStage.h"
+#include "Graphics/RenderStages/LifeParticleStage.h"
+#include "Graphics/RenderStages/ScreenStage.h"
+
 LifeSimulation::LifeSimulation(unsigned int particleCount)
 	: ParticleSimulation(particleCount)
 {
@@ -16,6 +20,10 @@ LifeSimulation::LifeSimulation(unsigned int particleCount)
 	}
 
 	renderBuffer = new Texture(textureBuffer, 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, sizeof(unsigned int));
+
+	clearScreenStage = new ClearScreenStage(DXAccess::GetWindow(), renderBuffer);
+	screenStage = new ScreenStage("Source/Shaders/Life/screen.pixel.hlsl", DXAccess::GetWindow(), renderBuffer);
+	particleStage = new LifeParticleStage(DXAccess::GetWindow(), renderBuffer, &settings);
 }
 
 void LifeSimulation::Update(float deltaTime)
@@ -24,4 +32,7 @@ void LifeSimulation::Update(float deltaTime)
 
 void LifeSimulation::Render(ComPtr<ID3D12GraphicsCommandList2> commandList)
 {
+	clearScreenStage->RecordStage(commandList);
+	particleStage->RecordStage(commandList);
+	screenStage->RecordStage(commandList);
 }

@@ -75,7 +75,7 @@ void ScreenStage::CreatePipeline(const std::string& pixelShaderPath)
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	DXPipelineDescription description;
-	description.VertexPath = "Source/Shaders/NBody/screen.vertex.hlsl";
+	description.VertexPath = "Source/Shaders/screen.vertex.hlsl";
 	description.PixelPath = pixelShaderPath;
 	description.RootSignature = rootSignature;
 

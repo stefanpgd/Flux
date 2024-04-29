@@ -6,6 +6,7 @@
 class Mesh;
 class Texture;
 
+// TODO: Probably rename to 'PresentScreen' stage
 class ScreenStage : public RenderStage
 {
 public:

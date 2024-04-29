@@ -9,7 +9,7 @@ struct PhysarumSettings;
 struct Agent
 {
 	float position[2];
-	float angle; // 0 - 2 Pi
+	float angle; 
 };
 
 // TODO: Rename to PhysarumAgentStage

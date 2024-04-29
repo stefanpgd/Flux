@@ -24,7 +24,6 @@ struct SimpleNBodySettings
 	float trailCutoffOpacity = 0.1f; 
 };
 
-// TODO: Depending if we end up having full Nbody, maybe rename or not 
 class SimpleNBodySimulation : public ParticleSimulation
 {
 public:

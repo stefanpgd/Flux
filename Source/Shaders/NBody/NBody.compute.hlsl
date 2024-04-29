@@ -23,7 +23,7 @@ struct SimulationSettings
 };
 ConstantBuffer<SimulationSettings> settings : register(b0);
 
-RWTexture2D<float4> testTexture : register(u0);
+RWTexture2D<float4> backBuffer : register(u0);
 RWStructuredBuffer<Particle> particles : register(u1);
 
 float2 CheckBounds(float2 position)
@@ -32,7 +32,7 @@ float2 CheckBounds(float2 position)
     int height;
     
     // Grab texture bounds //
-    testTexture.GetDimensions(width, height);
+    backBuffer.GetDimensions(width, height);
 
     if (position.x > width)
     {
@@ -113,19 +113,19 @@ void main(ComputeShaderInput IN)
     float4 coreColor = float4(coreStengthColor, coreStengthColor, coreStengthColor, 1.0);
     float4 sideColor = float4(sideStrengthColor, sideStrengthColor, sideStrengthColor, 1.0);
     
-    testTexture[int2(p.position)] += coreStengthColor;
-    testTexture[int2(p.position) + int2(1, 0)] += sideColor;
-    testTexture[int2(p.position) + int2(-1, 0)] += sideColor;
-    testTexture[int2(p.position) + int2(0, 1)] += sideColor;
-    testTexture[int2(p.position) + int2(0, -1)] += sideColor;
-    
-    testTexture[int2(p.position) + int2(1, 1)] += sideColor;
-    testTexture[int2(p.position) + int2(-1, -1)] += sideColor;
-    testTexture[int2(p.position) + int2(-1, 1)] += sideColor;
-    testTexture[int2(p.position) + int2(1, -1)] += sideColor;
-    
-    testTexture[int2(p.position) + int2(2, 0)] += outerStrengthColor;
-    testTexture[int2(p.position) + int2(-2, 0)] += outerStrengthColor;
-    testTexture[int2(p.position) + int2(0, 2)] += outerStrengthColor;
-    testTexture[int2(p.position) + int2(0, -2)] += outerStrengthColor;
+    backBuffer[int2(p.position)] += coreStengthColor;
+    backBuffer[int2(p.position) + int2(1, 0)] += sideColor;
+    backBuffer[int2(p.position) + int2(-1, 0)] += sideColor;
+    backBuffer[int2(p.position) + int2(0, 1)] += sideColor;
+    backBuffer[int2(p.position) + int2(0, -1)] += sideColor;
+
+    backBuffer[int2(p.position) + int2(1, 1)] += sideColor;
+    backBuffer[int2(p.position) + int2(-1, -1)] += sideColor;
+    backBuffer[int2(p.position) + int2(-1, 1)] += sideColor;
+    backBuffer[int2(p.position) + int2(1, -1)] += sideColor;
+
+    backBuffer[int2(p.position) + int2(2, 0)] += outerStrengthColor;
+    backBuffer[int2(p.position) + int2(-2, 0)] += outerStrengthColor;
+    backBuffer[int2(p.position) + int2(0, 2)] += outerStrengthColor;
+    backBuffer[int2(p.position) + int2(0, -2)] += outerStrengthColor;
 }
