@@ -29,13 +29,9 @@ LifeSimulation::LifeSimulation(unsigned int particleCount)
 
 	// TODO: Probably instead of doing glm::vec4, instead do floats on CPU
 	// and do some extra constant bind calls on GPU
-	settings.attractionMatrix[0][0].x = 0.8;
-	settings.attractionMatrix[0][1].x = -0.6;
-	settings.attractionMatrix[1][0].x = 0.9;
-	settings.attractionMatrix[1][1].x = 0.05;
-
-	settings.cellColors[0] = glm::vec4(1.0f, 0.1f, 0.1f, 1.0f);
-	settings.cellColors[1] = glm::vec4(0.1f, 1.0f, 0.1f, 1.0f);
+	settings.cellColors[0] = glm::vec4(1.0f, 0.2f, 0.2f, 1.0f);
+	settings.cellColors[1] = glm::vec4(0.2f, 1.0f, 0.2f, 1.0f);
+	settings.cellColors[2] = glm::vec4(0.2f, 0.2f, 1.0f, 1.0f);
 }
 
 void LifeSimulation::Update(float deltaTime)
@@ -50,10 +46,11 @@ void LifeSimulation::Update(float deltaTime)
 
 	ImGui::ColorEdit3("Cell Color - 1", &settings.cellColors[0].x);
 	ImGui::ColorEdit3("Cell Color - 2", &settings.cellColors[1].x);
+	ImGui::ColorEdit3("Cell Color - 3", &settings.cellColors[2].x);
 
 	ImGui::SeparatorText("Cell Attractions");
 
-	for(int x = 0; x < 3; x++)
+	for(int x = 0; x < 4; x++)
 	{
 		ImGui::PushID(x);
 
@@ -74,11 +71,11 @@ void LifeSimulation::Update(float deltaTime)
 		ImGui::PopID();
 	}
 
-	for(int y = 0; y < 2; y++)
+	for(int y = 0; y < 3; y++)
 	{
-		for(int x = 0; x < 3; x++)
+		for(int x = 0; x < 4; x++)
 		{
-			ImGui::PushID(y * 2 + x);
+			ImGui::PushID(y * 4 + x);
 
 			if(x == 0)
 			{
@@ -90,7 +87,7 @@ void LifeSimulation::Update(float deltaTime)
 			}
 			else
 			{
-				float* value = &settings.attractionMatrix[y][x - 1].x;
+				float* value = &settings.attractionMatrix[y][x - 1];
 
 				ImGui::SameLine();
 

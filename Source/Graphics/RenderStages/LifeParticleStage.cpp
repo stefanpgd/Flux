@@ -53,9 +53,13 @@ void LifeParticleStage::InitializeParticles()
 
 		particles[i].color = 0;
 
-		if(roll > 0.1)
+		if(roll < 0.1) // 10% chance for 'Green'
 		{
 			particles[i].color = 1;
+		}
+		else if(roll < 0.3)  // 20% chance for 'Blue'
+		{
+			particles[i].color = 2;
 		}
 	}
 

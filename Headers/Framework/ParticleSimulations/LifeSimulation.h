@@ -17,8 +17,9 @@ struct LifeSettings
 	float maxDistance = 10.0f;
 	float friction = 2.5f;
 
-	glm::vec4 attractionMatrix[2][2];
-	glm::vec4 cellColors[2];
+	// 3x3 with a 'w' as stub
+	glm::vec4 attractionMatrix[3];
+	glm::vec4 cellColors[3];
 };
 
 class LifeSimulation : public ParticleSimulation

@@ -14,8 +14,8 @@ struct SimulationSettings
     float maxDistance;
     float friction;
     
-    float attractionMatrix[2][2];
-    float3 cellColors[2];
+    float3 attractionMatrix[3];
+    float3 cellColors[3];
 };
 ConstantBuffer<SimulationSettings> settings : register(b0);
 
@@ -105,7 +105,8 @@ void main(ComputeShaderInput IN)
             continue;
         }
         
-        float attraction = settings.attractionMatrix[p.color][p2.color];
+        float3 row = settings.attractionMatrix[p.color];
+        float attraction = row[p2.color];
         float normalizedDistance = distance / settings.maxDistance;
         
         if(isnan(normalizedDistance))
