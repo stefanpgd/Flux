@@ -15,6 +15,7 @@ struct SimulationSettings
     float friction;
     
     float attractionMatrix[2][2];
+    float3 cellColors[2];
 };
 ConstantBuffer<SimulationSettings> settings : register(b0);
 
@@ -27,12 +28,6 @@ struct Particle
 
 RWTexture2D<float4> backBuffer : register(u0); // acts as 'TrailMap'
 RWStructuredBuffer<Particle> particles : register(u1);
-
-static float3 cellColors[2] =
-{
-    float3(1.0, 0.05, 0.05),
-    float3(0.5, 0.5, 1.0)
-};
 
 float2 CheckBounds(float2 position)
 {
@@ -132,17 +127,18 @@ void main(ComputeShaderInput IN)
     
     particles[ID] = p;
     
-    backBuffer[uint2(p.position)] += float4(cellColors[p.color], 1.0);
+    float4 color = float4(settings.cellColors[p.color].rgb, 1.0f);
+    backBuffer[uint2(p.position)] += color;
     
     const float sideColorStrength = 0.75f;
     const float cornerColorStrength = 0.25f;
-    backBuffer[uint2(p.position) + uint2(1, 0)] += float4(cellColors[p.color] * sideColorStrength, 1.0);
-    backBuffer[uint2(p.position) + uint2(-1, 0)] += float4(cellColors[p.color] * sideColorStrength, 1.0);
-    backBuffer[uint2(p.position) + uint2(0, 1)] += float4(cellColors[p.color] * sideColorStrength, 1.0);
-    backBuffer[uint2(p.position) + uint2(0, -1)] += float4(cellColors[p.color] * sideColorStrength, 1.0);
+    backBuffer[uint2(p.position) + uint2(1, 0)] += color;
+    backBuffer[uint2(p.position) + uint2(-1, 0)] += color;
+    backBuffer[uint2(p.position) + uint2(0, 1)] += color;
+    backBuffer[uint2(p.position) + uint2(0, -1)] += color;
     
-    backBuffer[uint2(p.position) + uint2(1, 1)] += float4(cellColors[p.color] * cornerColorStrength, 1.0);
-    backBuffer[uint2(p.position) + uint2(1, -1)] += float4(cellColors[p.color] * cornerColorStrength, 1.0);
-    backBuffer[uint2(p.position) + uint2(-1, 1)] += float4(cellColors[p.color] * cornerColorStrength, 1.0);
-    backBuffer[uint2(p.position) + uint2(-1, -1)] += float4(cellColors[p.color] * cornerColorStrength, 1.0);
+    backBuffer[uint2(p.position) + uint2(1, 1)] += color;
+    backBuffer[uint2(p.position) + uint2(1, -1)] += color;
+    backBuffer[uint2(p.position) + uint2(-1, 1)] += color;
+    backBuffer[uint2(p.position) + uint2(-1, -1)] += color;
 }

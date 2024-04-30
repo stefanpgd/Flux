@@ -33,6 +33,9 @@ LifeSimulation::LifeSimulation(unsigned int particleCount)
 	settings.attractionMatrix[0][1].x = -0.6;
 	settings.attractionMatrix[1][0].x = 0.9;
 	settings.attractionMatrix[1][1].x = 0.05;
+
+	settings.cellColors[0] = glm::vec4(1.0f, 0.1f, 0.1f, 1.0f);
+	settings.cellColors[1] = glm::vec4(0.1f, 1.0f, 0.1f, 1.0f);
 }
 
 void LifeSimulation::Update(float deltaTime)
@@ -45,13 +48,10 @@ void LifeSimulation::Update(float deltaTime)
 	ImGui::DragFloat("Particle Scan Distance", &settings.maxDistance, 0.01f, 0.0f, 50.0f);
 	ImGui::DragFloat("Particle Friction", &settings.friction, 0.005f, 0.0f, 10.0f);
 
-	ImGui::SeparatorText("Cell Attractions");
+	ImGui::ColorEdit3("Cell Color - 1", &settings.cellColors[0].x);
+	ImGui::ColorEdit3("Cell Color - 2", &settings.cellColors[1].x);
 
-	const ImVec4 colors[3]{
-		ImVec4(0.0, 0.0, 0.0, 1.0),
-		ImVec4(1.0, 0.0, 0.0, 1.0),
-		ImVec4(0.0, 1.0, 0.0, 1.0),
-	};
+	ImGui::SeparatorText("Cell Attractions");
 
 	for(int x = 0; x < 3; x++)
 	{
@@ -60,19 +60,19 @@ void LifeSimulation::Update(float deltaTime)
 		if(x > 0)
 		{
 			ImGui::SameLine();
-		}
 
-		ImGui::PushStyleColor(ImGuiCol_Header, colors[x]);
-		if(ImGui::Selectable("###", true, ImGuiSelectableFlags_Disabled, ImVec2(50, 50)))
+			ImVec4 gridColor = ImVec4(settings.cellColors[x - 1].x, settings.cellColors[x - 1].y, settings.cellColors[x - 1].z, 1.0f);
+			ImGui::PushStyleColor(ImGuiCol_Header, gridColor);
+			ImGui::Selectable("###", true, ImGuiSelectableFlags_Disabled, ImVec2(50, 50));
+			ImGui::PopStyleColor();
+		}
+		else
 		{
-
+			ImGui::Selectable("###", true, ImGuiSelectableFlags_Disabled, ImVec2(50, 50));
 		}
-		ImGui::PopStyleColor();
 
 		ImGui::PopID();
 	}
-
-	static float t = 0.0f;
 
 	for(int y = 0; y < 2; y++)
 	{
@@ -82,7 +82,9 @@ void LifeSimulation::Update(float deltaTime)
 
 			if(x == 0)
 			{
-				ImGui::PushStyleColor(ImGuiCol_Header, colors[y + 1]);
+				ImVec4 gridColor = ImVec4(settings.cellColors[y].x, settings.cellColors[y].y, settings.cellColors[y].z, 1.0f);
+
+				ImGui::PushStyleColor(ImGuiCol_Header, gridColor);
 				ImGui::Selectable("###", true, ImGuiSelectableFlags_Disabled, ImVec2(50, 50));
 				ImGui::PopStyleColor();
 			}

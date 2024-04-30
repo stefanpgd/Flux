@@ -18,6 +18,7 @@ struct LifeSettings
 	float friction = 2.5f;
 
 	glm::vec4 attractionMatrix[2][2];
+	glm::vec4 cellColors[2];
 };
 
 class LifeSimulation : public ParticleSimulation
