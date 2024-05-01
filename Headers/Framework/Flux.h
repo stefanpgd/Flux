@@ -4,6 +4,7 @@
 #include <Windows.h>
 
 #include <string>
+#include <vector>
 
 class Renderer;
 class Editor;
@@ -23,6 +24,8 @@ private:
 	void Update(float deltaTime);
 	void Render();
 
+	void SetParticleSimulation(ParticleSimulation* simulation);
+
 	static LRESULT CALLBACK WindowsCallback(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 private:
@@ -33,5 +36,8 @@ private:
 	Renderer* renderer;
 	Editor* editor;
 
+	std::vector<ParticleSimulation*> simulations;
 	ParticleSimulation* activeSimulation;
+
+	friend class Editor;
 };

@@ -21,26 +21,25 @@
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-NBodySimulation* nbodySimulation;
-SimpleNBodySimulation* simpleNBodySimulation;
-PhysarumSimulation* physarumSimulation;
-
-// TODO: Re-add resizing, which includes resizing simulations
+namespace EngineInternal
+{
+	bool doResize = false;
+}
+using namespace EngineInternal;
 
 Flux::Flux()
 {
 	RegisterWindowClass();
 
 	renderer = new Renderer(applicationName, 1024, 1024);
-	editor = new Editor();
+	editor = new Editor(this, simulations);
 
-	nbodySimulation = new NBodySimulation(32768);
-	simpleNBodySimulation = new SimpleNBodySimulation(63488);
-	physarumSimulation = new PhysarumSimulation(2000000);
+	simulations.push_back(new NBodySimulation(32768));
+	simulations.push_back(new SimpleNBodySimulation(63488));
+	simulations.push_back(new PhysarumSimulation(2000000));
+	simulations.push_back(new LifeSimulation(30000));
 
-	activeSimulation = new LifeSimulation(30000);
-
-	renderer->SetParticleSimulation(activeSimulation);
+	SetParticleSimulation(simulations[1]);
 }
 
 void Flux::Run()
@@ -75,6 +74,12 @@ void Flux::Run()
 
 void Flux::Start()
 {
+	if(doResize)
+	{
+		renderer->Resize();
+		doResize = false;
+	}
+
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
@@ -83,22 +88,6 @@ void Flux::Start()
 void Flux::Update(float deltaTime)
 {
 	Input::Update();
-
-	if (Input::GetKeyDown(KeyCode::G))
-	{
-		// TODO, probably do through some editor window soon-ish 
-		// when we've 3 or more simulations
-		if (activeSimulation == nbodySimulation)
-		{
-			activeSimulation = simpleNBodySimulation;
-		}
-		else
-		{
-			activeSimulation = nbodySimulation;
-		}
-
-		renderer->SetParticleSimulation(activeSimulation);
-	}
 
 	editor->Update(deltaTime);
 	activeSimulation->Update(deltaTime);
@@ -113,6 +102,13 @@ void Flux::Render()
 {
 	ImGui::Render();
 	renderer->Render();
+}
+
+void Flux::SetParticleSimulation(ParticleSimulation* simulation)
+{
+	activeSimulation = simulation;
+
+	renderer->SetParticleSimulation(simulation);
 }
 
 void Flux::RegisterWindowClass()
@@ -143,6 +139,10 @@ LRESULT Flux::WindowsCallback(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPa
 	{
 	case WM_DESTROY:
 		::PostQuitMessage(0);
+		break;
+
+	case WM_SIZE:
+		doResize = true;
 		break;
 	}
 

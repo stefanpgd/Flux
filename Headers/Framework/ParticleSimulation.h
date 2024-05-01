@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include <d3d12.h>
 #include <wrl.h>
 using namespace Microsoft::WRL;
@@ -20,6 +22,7 @@ public:
 	virtual void Update(float deltaTime);
 	virtual void Render(ComPtr<ID3D12GraphicsCommandList2> commandList) = 0;
 
-protected:
+public:
+	std::string simulationName;
 	unsigned int particleCount;
 };

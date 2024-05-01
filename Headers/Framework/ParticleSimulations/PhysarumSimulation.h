@@ -4,7 +4,7 @@
 
 class Texture;
 
-class PhysarumComputeStage;
+class PhysarumAgentStage;
 class PhysarumDiffuseStage;
 class ScreenStage;
 
@@ -37,7 +37,7 @@ private:
 	Texture* renderBuffer;
 
 	// Render stages //
-	PhysarumComputeStage* agentStage;
+	PhysarumAgentStage* agentStage;
 	PhysarumDiffuseStage* diffuseStage;
 	ScreenStage* screenStage;
 

@@ -1,27 +1,70 @@
 #include "Framework/Editor.h"
+#include "Framework/Flux.h"
+#include "Framework/ParticleSimulation.h"
 
 #include <imgui.h>
 #include <string>
 
-Editor::Editor()
+Editor::Editor(Flux* application, const std::vector<ParticleSimulation*>& simulations) 
+	: application(application), simulations(simulations)
 {
 	ImGuiStyleSettings();
 }
 
 void Editor::Update(float deltaTime)
 {
+	// Record FPS //
+	frameCount++;
+	int index = frameCount % averageFPS.size();
+	averageFPS[index] = int(1.0f / deltaTime);
+
 	if(ImGui::BeginMainMenuBar())
 	{
-		// FPS // 
-		ImGui::PushFont(boldFont);
-		ImGui::Text("FPS:");
-		ImGui::PopFont();
+		if(ImGui::BeginMenu("Simulation Menu"))
+		{
 
-		std::string fps = std::to_string(int(1.0f / deltaTime));
-		ImGui::Text(fps.c_str());
+			for(int i = 0; i < simulations.size(); i++)
+			{
+				if(ImGui::MenuItem(simulations[i]->simulationName.c_str()))
+				{
+					application->SetParticleSimulation(simulations[i]);
+				}
+			}
+
+			ImGui::EndMenu();
+		}
+
 		ImGui::Separator();
 
-		ImGui::Text("Press 'G' to switch Between Simple & Full N-Body simulations");
+		ImGui::PushFont(boldFont);
+		ImGui::Text("Active Simulation: ");
+		ImGui::PopFont();
+		ImGui::Text(application->activeSimulation->simulationName.c_str());
+		
+		ImGui::Separator();
+
+		ImGui::PushFont(boldFont);
+		ImGui::Text("Particle Count: ");
+		ImGui::PopFont();
+		ImGui::Text("%i", application->activeSimulation->particleCount);
+		
+		ImGui::Separator();
+
+		// FPS // 
+		ImGui::PushFont(boldFont);
+		ImGui::Text("Average FPS:");
+		ImGui::PopFont();
+
+		int sum = 0;
+		for(int fps : averageFPS)
+		{
+			sum += fps;
+		}
+		sum /= 60;
+
+		std::string fps = std::to_string(sum);
+		ImGui::Text(fps.c_str());
+		ImGui::Separator();
 
 		ImGui::EndMainMenuBar();
 	}

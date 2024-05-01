@@ -13,6 +13,8 @@
 
 NBodySimulation::NBodySimulation(int particleCount) : ParticleSimulation(particleCount)
 {
+	simulationName = "N-Body";
+
 	settings.particleCount = particleCount;
 
 	// Variables relevant to the render stages & compute pipeline(s) //

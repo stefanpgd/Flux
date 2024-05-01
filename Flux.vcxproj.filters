@@ -105,7 +105,7 @@
     <ClCompile Include="Source\Graphics\RenderStages\NBodyComputeStage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\RenderStages\PhysarumComputeStage.cpp">
+    <ClCompile Include="Source\Graphics\RenderStages\PhysarumAgentStage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Framework\ParticleSimulations\PhysarumSimulation.cpp">
@@ -242,7 +242,7 @@
     <ClInclude Include="Headers\Framework\ParticleSimulations\PhysarumSimulation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Graphics\RenderStages\PhysarumComputeStage.h">
+    <ClInclude Include="Headers\Graphics\RenderStages\PhysarumAgentStage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Graphics\RenderStages\PhysarumDiffuseStage.h">

@@ -13,6 +13,7 @@
 LifeSimulation::LifeSimulation(unsigned int particleCount)
 	: ParticleSimulation(particleCount)
 {
+	simulationName = "Particle Life";
 	settings.particleCount = particleCount;
 
 	unsigned int* textureBuffer = new unsigned int[1024 * 1024];
@@ -27,8 +28,6 @@ LifeSimulation::LifeSimulation(unsigned int particleCount)
 	screenStage = new ScreenStage("Source/Shaders/Life/screen.pixel.hlsl", renderBuffer);
 	particleStage = new LifeParticleStage(renderBuffer, &settings);
 
-	// TODO: Probably instead of doing glm::vec4, instead do floats on CPU
-	// and do some extra constant bind calls on GPU
 	settings.cellColors[0] = glm::vec4(1.0f, 0.2f, 0.2f, 1.0f);
 	settings.cellColors[1] = glm::vec4(0.2f, 1.0f, 0.2f, 1.0f);
 	settings.cellColors[2] = glm::vec4(0.2f, 0.2f, 1.0f, 1.0f);
@@ -36,8 +35,6 @@ LifeSimulation::LifeSimulation(unsigned int particleCount)
 
 void LifeSimulation::Update(float deltaTime)
 {
-	ImGui::ShowDemoWindow();
-
 	settings.deltaTime = deltaTime;
 
 	ImGui::Begin("Particle Life Simulation Settings");

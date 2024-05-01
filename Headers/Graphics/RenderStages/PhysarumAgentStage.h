@@ -12,11 +12,10 @@ struct Agent
 	float angle; 
 };
 
-// TODO: Rename to PhysarumAgentStage
-class PhysarumComputeStage : public RenderStage
+class PhysarumAgentStage : public RenderStage
 {
 public:
-	PhysarumComputeStage(Texture* backBuffer, PhysarumSettings* settings);
+	PhysarumAgentStage(Texture* backBuffer, PhysarumSettings* settings);
 
 	void RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList) override;
 

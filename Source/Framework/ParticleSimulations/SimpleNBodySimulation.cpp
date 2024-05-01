@@ -14,6 +14,7 @@
 // TODO: Be able to pass different sizes instead of hard-coding it
 SimpleNBodySimulation::SimpleNBodySimulation(int particleCount) : ParticleSimulation(particleCount)
 {
+	simulationName = "Simple N-Body";
 	settings.particleCount = particleCount;
 
 	// Variables relevant to the render stages & compute pipeline(s) //
@@ -41,6 +42,7 @@ void SimpleNBodySimulation::Update(float deltaTime)
 	}
 
 	ImGui::Begin("Simplified N-Body Settings");
+	ImGui::Text("X:%i , Y:%i", int(settings.positionX), int(settings.positionY));
 	ImGui::DragFloat("G", &settings.G, 0.01f, 0.01f, 10.0f);
 	ImGui::DragFloat("Max Velocity", &settings.maxVelocity, 0.1f, 0.01f, 500.0f);
 	ImGui::DragFloat("Mouse Mass", &settings.mouseMass, 10.0f);

@@ -146,7 +146,7 @@
     <ClCompile Include="Source\Graphics\RenderStages\ScreenStage.cpp" />
     <ClCompile Include="Source\Framework\ParticleSimulations\LifeSimulation.cpp" />
     <ClCompile Include="Source\Graphics\RenderStages\PhysarumDiffuseStage.cpp" />
-    <ClCompile Include="Source\Graphics\RenderStages\PhysarumComputeStage.cpp" />
+    <ClCompile Include="Source\Graphics\RenderStages\PhysarumAgentStage.cpp" />
     <ClCompile Include="Source\Framework\ParticleSimulations\PhysarumSimulation.cpp" />
     <ClCompile Include="Source\Graphics\RenderStages\NBodyComputeStage.cpp" />
     <ClCompile Include="Source\Framework\ParticleSimulations\NBodySimulation.cpp" />
@@ -219,7 +219,7 @@
     <ClInclude Include="Headers\Framework\ParticleSimulations\NBodySimulation.h" />
     <ClInclude Include="Headers\Graphics\RenderStages\NBodyComputeStage.h" />
     <ClInclude Include="Headers\Framework\ParticleSimulations\PhysarumSimulation.h" />
-    <ClInclude Include="Headers\Graphics\RenderStages\PhysarumComputeStage.h" />
+    <ClInclude Include="Headers\Graphics\RenderStages\PhysarumAgentStage.h" />
     <ClInclude Include="Headers\Graphics\RenderStages\PhysarumDiffuseStage.h" />
     <ClInclude Include="Headers\Framework\ParticleSimulations\LifeSimulation.h" />
     <ClInclude Include="Headers\Graphics\RenderStages\ScreenStage.h" />

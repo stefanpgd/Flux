@@ -4,13 +4,14 @@
 #include "Graphics/DXAccess.h"
 
 #include "Graphics/RenderStages/PhysarumDiffuseStage.h"
-#include "Graphics/RenderStages/PhysarumComputeStage.h"
+#include "Graphics/RenderStages/PhysarumAgentStage.h"
 #include "Graphics/RenderStages/ScreenStage.h"
 
 #include <imgui.h>
 
 PhysarumSimulation::PhysarumSimulation(unsigned int particleCount) : ParticleSimulation(particleCount)
 {
+	simulationName = "Physarum Polycephalum";
 	settings.particleCount = particleCount;
 
 	unsigned int* textureBuffer = new unsigned int[1024 * 1024];
@@ -25,7 +26,7 @@ PhysarumSimulation::PhysarumSimulation(unsigned int particleCount) : ParticleSim
 	// into the base class consutrctor is probably the way to go
 	Window* window = DXAccess::GetWindow();
 
-	agentStage = new PhysarumComputeStage(renderBuffer, &settings);
+	agentStage = new PhysarumAgentStage(renderBuffer, &settings);
 	diffuseStage = new PhysarumDiffuseStage(renderBuffer, &settings);
 	screenStage = new ScreenStage("Source/Shaders/Physarum/screen.pixel.hlsl", renderBuffer);
 }

@@ -1,4 +1,4 @@
-#include "Graphics/RenderStages/PhysarumComputeStage.h"
+#include "Graphics/RenderStages/PhysarumAgentStage.h"
 #include "Framework/ParticleSimulations/PhysarumSimulation.h"
 #include "Framework/Mathematics.h"
 
@@ -9,14 +9,14 @@
 
 #include "Utilities/Random.h"
 
-PhysarumComputeStage::PhysarumComputeStage(Texture* backBuffer, PhysarumSettings* settings)
+PhysarumAgentStage::PhysarumAgentStage(Texture* backBuffer, PhysarumSettings* settings)
 	: backBuffer(backBuffer), settings(settings)
 {
 	InitializeParticles();
 	CreatePipeline();
 }
 
-void PhysarumComputeStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList)
+void PhysarumAgentStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList)
 {
 	// 1. Bind root signature & pipeline state //
 	commandList->SetComputeRootSignature(rootSignature->GetAddress());
@@ -32,7 +32,7 @@ void PhysarumComputeStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> comman
 	commandList->Dispatch(dispatchSize, 1, 1);
 }
 
-void PhysarumComputeStage::InitializeParticles()
+void PhysarumAgentStage::InitializeParticles()
 {
 	Agent* agents = new Agent[settings->particleCount];
 
@@ -50,7 +50,7 @@ void PhysarumComputeStage::InitializeParticles()
 	agentBuffer = new DXStructuredBuffer(agents, settings->particleCount, sizeof(Agent));
 }
 
-void PhysarumComputeStage::CreatePipeline()
+void PhysarumAgentStage::CreatePipeline()
 {
 	CD3DX12_DESCRIPTOR_RANGE1 backBufferRange[1];
 	backBufferRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);
