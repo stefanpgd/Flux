@@ -6,7 +6,7 @@
 
 #include "Graphics/RenderStages/ClearScreenStage.h"
 #include "Graphics/RenderStages/LifeParticleStage.h"
-#include "Graphics/RenderStages/ScreenStage.h"
+#include "Graphics/RenderStages/PresentScreenStage.h"
 
 #include <imgui.h>
 
@@ -25,7 +25,7 @@ LifeSimulation::LifeSimulation(unsigned int particleCount)
 	renderBuffer = new Texture(textureBuffer, 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, sizeof(unsigned int));
 
 	clearScreenStage = new ClearScreenStage(renderBuffer);
-	screenStage = new ScreenStage("Source/Shaders/Life/screen.pixel.hlsl", renderBuffer);
+	screenStage = new PresentScreenStage("Source/Shaders/Life/screen.pixel.hlsl", renderBuffer);
 	particleStage = new LifeParticleStage(renderBuffer, &settings);
 
 	settings.cellColors[0] = glm::vec4(1.0f, 0.2f, 0.2f, 1.0f);

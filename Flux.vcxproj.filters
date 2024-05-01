@@ -120,7 +120,7 @@
     <ClCompile Include="Source\Framework\ParticleSimulations\LifeSimulation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\RenderStages\ScreenStage.cpp">
+    <ClCompile Include="Source\Graphics\RenderStages\PresentScreenStage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\RenderStages\LifeParticleStage.cpp">
@@ -251,7 +251,7 @@
     <ClInclude Include="Headers\Framework\ParticleSimulations\LifeSimulation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Graphics\RenderStages\ScreenStage.h">
+    <ClInclude Include="Headers\Graphics\RenderStages\PresentScreenStage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Graphics\RenderStages\LifeParticleStage.h">

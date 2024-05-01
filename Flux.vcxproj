@@ -143,7 +143,7 @@
   <ItemGroup>
     <ClCompile Include="Source\Graphics\RenderStages\ClearScreenStage.cpp" />
     <ClCompile Include="Source\Graphics\RenderStages\LifeParticleStage.cpp" />
-    <ClCompile Include="Source\Graphics\RenderStages\ScreenStage.cpp" />
+    <ClCompile Include="Source\Graphics\RenderStages\PresentScreenStage.cpp" />
     <ClCompile Include="Source\Framework\ParticleSimulations\LifeSimulation.cpp" />
     <ClCompile Include="Source\Graphics\RenderStages\PhysarumDiffuseStage.cpp" />
     <ClCompile Include="Source\Graphics\RenderStages\PhysarumAgentStage.cpp" />
@@ -222,7 +222,7 @@
     <ClInclude Include="Headers\Graphics\RenderStages\PhysarumAgentStage.h" />
     <ClInclude Include="Headers\Graphics\RenderStages\PhysarumDiffuseStage.h" />
     <ClInclude Include="Headers\Framework\ParticleSimulations\LifeSimulation.h" />
-    <ClInclude Include="Headers\Graphics\RenderStages\ScreenStage.h" />
+    <ClInclude Include="Headers\Graphics\RenderStages\PresentScreenStage.h" />
     <ClInclude Include="Headers\Graphics\RenderStages\LifeParticleStage.h" />
   </ItemGroup>
   <ItemGroup>

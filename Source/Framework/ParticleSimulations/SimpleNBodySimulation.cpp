@@ -7,7 +7,7 @@
 // Render Stages //
 #include "Graphics/RenderStages/NBodyClearStage.h"
 #include "Graphics/RenderStages/SimpleNBodyComputeStage.h"
-#include "Graphics/RenderStages/ScreenStage.h"
+#include "Graphics/RenderStages/PresentScreenStage.h"
 
 #include <imgui.h>
 
@@ -18,14 +18,12 @@ SimpleNBodySimulation::SimpleNBodySimulation(int particleCount) : ParticleSimula
 	settings.particleCount = particleCount;
 
 	// Variables relevant to the render stages & compute pipeline(s) //
-	Window* window = DXAccess::GetWindow();
-
 	unsigned int* textureBuffer = new unsigned int[1024 * 1024];
 	renderBuffer = new Texture(textureBuffer, 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, sizeof(unsigned int));
 
 	clearBufferStage = new NBodyClearStage(renderBuffer, &settings.trailStrength, &settings.trailCutoffOpacity);
 	nBodyComputeStage = new SimpleNBodyComputeStage(renderBuffer, &settings);
-	screenStage = new ScreenStage("Source/Shaders/NBody/screen.pixel.hlsl", renderBuffer);
+	screenStage = new PresentScreenStage("Source/Shaders/NBody/screen.pixel.hlsl", renderBuffer);
 }
 
 void SimpleNBodySimulation::Update(float deltaTime)
@@ -33,8 +31,6 @@ void SimpleNBodySimulation::Update(float deltaTime)
 	settings.deltaTime = deltaTime;
 	settings.positionX = ImGui::GetIO().MousePos.x;
 	settings.positionY = ImGui::GetIO().MousePos.y;
-
-	// TODO: Add cool presets for the settings
 
 	if(Input::GetKeyDown(KeyCode::F))
 	{

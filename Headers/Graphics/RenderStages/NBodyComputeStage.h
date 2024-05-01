@@ -6,12 +6,6 @@ class Texture;
 class DXStructuredBuffer;
 struct NBodySettings;
 
-// TODO: particle should likely be part of the simulation itself
-// since that defines what the simulation is and what it should act like..
-// so move this out soon-ish. Also when resizing or adding things, it should be part of that
-// and not this
-
-// TODO: Probably rename to NBodyParticle
 struct Particle
 {
 	float position[2];

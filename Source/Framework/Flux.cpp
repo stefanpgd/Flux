@@ -68,8 +68,6 @@ void Flux::Run()
 		Update(deltaTime);
 		Render();
 	}
-
-	// Destroy systems //
 }
 
 void Flux::Start()

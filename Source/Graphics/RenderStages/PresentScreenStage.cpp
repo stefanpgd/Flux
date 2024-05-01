@@ -1,4 +1,4 @@
-#include "Graphics/RenderStages/ScreenStage.h"
+#include "Graphics/RenderStages/PresentScreenStage.h"
 
 #include "Graphics/Mesh.h"
 #include "Graphics/Texture.h"
@@ -6,16 +6,14 @@
 #include "Graphics/DXRootSignature.h"
 #include "Graphics/DXUtilities.h"
 
-ScreenStage::ScreenStage(const std::string& pixelShaderPath, Texture* backBuffer)
+PresentScreenStage::PresentScreenStage(const std::string& pixelShaderPath, Texture* backBuffer)
 	: backBuffer(backBuffer)
 {
 	CreateScreenMesh();
 	CreatePipeline(pixelShaderPath);
 }
 
-// Todo: Consider maybe directly accessing the backbuffers from the swap-chain
-// So the need for a graphics/rasterization pipeline might falter
-void ScreenStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList)
+void PresentScreenStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList)
 {
 	// 0. Grab relevant resources for render call //
 	CD3DX12_CPU_DESCRIPTOR_HANDLE backBufferRTV = window->GetCurrentScreenRTV();
@@ -41,7 +39,7 @@ void ScreenStage::RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList)
 	commandList->DrawIndexedInstanced(screenMesh->GetIndicesCount(), 1, 0, 0, 0);
 }
 
-void ScreenStage::CreateScreenMesh()
+void PresentScreenStage::CreateScreenMesh()
 {
 	Vertex* screenVertices = new Vertex[4];
 	screenVertices[0].Position = glm::vec3(-1.0f, -1.0f, 0.0f);
@@ -63,7 +61,7 @@ void ScreenStage::CreateScreenMesh()
 	delete[] screenIndices;
 }
 
-void ScreenStage::CreatePipeline(const std::string& pixelShaderPath)
+void PresentScreenStage::CreatePipeline(const std::string& pixelShaderPath)
 {
 	CD3DX12_DESCRIPTOR_RANGE1 screenRange[1];
 	screenRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // back buffer as Texture

@@ -6,7 +6,7 @@ class Texture;
 
 class PhysarumAgentStage;
 class PhysarumDiffuseStage;
-class ScreenStage;
+class PresentScreenStage;
 
 struct PhysarumSettings
 {
@@ -39,7 +39,7 @@ private:
 	// Render stages //
 	PhysarumAgentStage* agentStage;
 	PhysarumDiffuseStage* diffuseStage;
-	ScreenStage* screenStage;
+	PresentScreenStage* screenStage;
 
 	PhysarumSettings settings;
 };

@@ -7,7 +7,7 @@ class Window;
 
 class NBodyClearStage;
 class SimpleNBodyComputeStage;
-class ScreenStage;
+class PresentScreenStage;
 
 struct SimpleNBodySettings
 {
@@ -32,8 +32,6 @@ public:
 	void Update(float deltaTime) override;
 	void Render(ComPtr<ID3D12GraphicsCommandList2> commandList) override;
 
-	// TODO: Add functionality to be able to restart the simulation
-
 private:
 	// Our output will be written to this //
 	Texture* renderBuffer;
@@ -41,7 +39,7 @@ private:
 	// Rendering Stages for this simulation //
 	NBodyClearStage* clearBufferStage;
 	SimpleNBodyComputeStage* nBodyComputeStage;
-	ScreenStage* screenStage;
+	PresentScreenStage* screenStage;
 
 	SimpleNBodySettings settings;
 };

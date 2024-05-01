@@ -7,7 +7,7 @@ class Texture;
 
 class ClearScreenStage;
 class LifeParticleStage;
-class ScreenStage;
+class PresentScreenStage;
 
 struct LifeSettings
 {
@@ -36,7 +36,7 @@ private:
 
 	ClearScreenStage* clearScreenStage;
 	LifeParticleStage* particleStage;
-	ScreenStage* screenStage;
+	PresentScreenStage* screenStage;
 
 	LifeSettings settings;
 };

@@ -5,7 +5,7 @@
 
 #include "Graphics/RenderStages/PhysarumDiffuseStage.h"
 #include "Graphics/RenderStages/PhysarumAgentStage.h"
-#include "Graphics/RenderStages/ScreenStage.h"
+#include "Graphics/RenderStages/PresentScreenStage.h"
 
 #include <imgui.h>
 
@@ -22,13 +22,9 @@ PhysarumSimulation::PhysarumSimulation(unsigned int particleCount) : ParticleSim
 
 	renderBuffer = new Texture(textureBuffer, 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, sizeof(unsigned int));
 	
-	// TODO: Since every render stage needs window anyway, moving it out of the parameters
-	// into the base class consutrctor is probably the way to go
-	Window* window = DXAccess::GetWindow();
-
 	agentStage = new PhysarumAgentStage(renderBuffer, &settings);
 	diffuseStage = new PhysarumDiffuseStage(renderBuffer, &settings);
-	screenStage = new ScreenStage("Source/Shaders/Physarum/screen.pixel.hlsl", renderBuffer);
+	screenStage = new PresentScreenStage("Source/Shaders/Physarum/screen.pixel.hlsl", renderBuffer);
 }
 
 void PhysarumSimulation::Update(float deltaTime)

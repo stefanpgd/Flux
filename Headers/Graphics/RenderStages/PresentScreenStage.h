@@ -6,11 +6,10 @@
 class Mesh;
 class Texture;
 
-// TODO: Probably rename to 'PresentScreen' stage
-class ScreenStage : public RenderStage
+class PresentScreenStage : public RenderStage
 {
 public:
-	ScreenStage(const std::string& pixelShaderPath, Texture* backBuffer);
+	PresentScreenStage(const std::string& pixelShaderPath, Texture* backBuffer);
 
 	void RecordStage(ComPtr<ID3D12GraphicsCommandList2> commandList) override;
 
