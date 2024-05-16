@@ -24,7 +24,7 @@
 
 ## What is it?
 Flux is a particle simulation playground where I can easily add different types of particle simulations running on Compute shaders using DirectX 12 as backend.
-I made this as a self-study project and as of the moment spent around 2-3 weeks of self-study on it. Right now I've moved onto the next project.
+I made this as a self-study project and as of the moment spent around 2 weeks of self-study on it. Right now I've moved onto the next project.
 
 ## Current Available Simulations:
 
